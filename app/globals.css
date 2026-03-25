@@ -1,26 +1,147 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-TRIAL.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Teodor";
+  src: url("/fonts/Teodor-TRIAL.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #efefec;
+  --foreground: #111111;
+  --accent-red: #ff3b30;
+  --accent-blue: #1d3eff;
+  --muted: rgba(17, 17, 17, 0.55);
+  --rule: rgba(17, 17, 17, 0.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Teodor", Georgia, serif;
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+a {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+.font-display {
+  font-family: "Perfektta", Arial, sans-serif;
+}
+
+.font-body {
+  font-family: "Teodor", Georgia, serif;
+}
+
+.text-h1 {
+  font-family: "Perfektta", Arial, sans-serif;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.text-h2 {
+  font-family: "Perfektta", Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.text-p1 {
+  font-family: "Teodor", Georgia, serif;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.text-red-accent {
+  color: var(--accent-red);
+}
+
+.text-blue-accent {
+  color: var(--accent-blue);
+}
+
+.rule-soft {
+  border-color: var(--rule);
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+  will-change: transform;
+}
+
+.text-h1 {
+  font-family: "Perfektta", Arial, sans-serif;
+  font-size: 110px;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+/* only start scaling down later */
+@media (max-width: 1280px) {
+  .text-h1 {
+    font-size: 92px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .text-h1 {
+    font-size: 72px;
+  }
+}
+
+@media (max-width: 768px) {
+  .text-h1 {
+    font-size: 52px;
+    line-height: 0.95;
+  }
+}
+
+  .text-h2,
+  .text-p1 {
+    font-size: 16px;
+  }
+
+
