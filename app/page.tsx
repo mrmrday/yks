@@ -912,7 +912,9 @@ export default function Home() {
             <img
               src="/projects/yks.svg"
               alt="YKS"
-              className="h-[57px] w-[184px] object-contain object-left md:h-[76px] md:w-[245px]"
+              width="914"
+              height="282"
+              className="h-auto w-[184px] md:w-[245px]"
               loading="eager"
               decoding="async"
             />
@@ -1091,12 +1093,12 @@ export default function Home() {
                           <button
                             type="button"
                             onClick={toggleModalVideoMuted}
-                            className="absolute right-4 top-4 z-20 flex min-w-[64px] items-center justify-center rounded-full bg-black/45 px-3 py-2 text-[13px] font-medium uppercase tracking-[0.08em] text-white backdrop-blur-sm transition hover:bg-black/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                            className="font-display absolute right-4 top-4 z-20 flex min-w-[84px] items-center justify-center rounded-full bg-black/45 px-4 py-2 text-[18px] leading-none tracking-[-0.02em] text-white backdrop-blur-sm transition hover:bg-black/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                             aria-label={
                               isModalVideoMuted ? "Unmute video" : "Mute video"
                             }
                           >
-                            {isModalVideoMuted ? "Sound" : "Mute"}
+                            {isModalVideoMuted ? "sound" : "mute"}
                           </button>
 
                           <button
@@ -1107,8 +1109,8 @@ export default function Home() {
                               isModalVideoPlaying ? "Pause video" : "Play video"
                             }
                           >
-                            <span className="flex min-w-[86px] items-center justify-center rounded-full bg-black/42 px-5 py-4 text-[14px] font-medium uppercase tracking-[0.08em] text-white backdrop-blur-sm">
-                              {isModalVideoPlaying ? "Pause" : "Play"}
+                            <span className="font-display flex min-w-[108px] items-center justify-center rounded-full bg-black/42 px-6 py-4 text-[22px] leading-none tracking-[-0.02em] text-white backdrop-blur-sm">
+                              {isModalVideoPlaying ? "pause" : "play"}
                             </span>
                           </button>
                         </>

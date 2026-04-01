@@ -243,7 +243,7 @@ video {
 
   .project-client-inline {
     display: inline;
-    font-size: 0.5em;
+    font-size: 0.25em;
     margin-left: 0.22em;
     line-height: 1;
     vertical-align: baseline;
@@ -251,7 +251,7 @@ video {
   }
 
   .project-client-inline--modal {
-    font-size: 0.42em;
+    font-size: 0.25em;
   }
 }
 
