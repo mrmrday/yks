@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Perfektta";
-  src: url("/fonts/Perfektta-TRIAL.woff2") format("woff2");
+  src: url("/fonts/Perfektta.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: "Teodor";
-  src: url("/fonts/Teodor-TRIAL.woff2") format("woff2");
+  src: url("/fonts/Teodor.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -21,8 +21,8 @@
 :root {
   --background: #efefec;
   --foreground: #111111;
-  --accent-red: #ff3b30;
-  --accent-blue: #1d3eff;
+  --accent-red: #ff0026;
+  --accent-blue: #002bff;
   --muted: rgba(17, 17, 17, 0.55);
   --rule: rgba(17, 17, 17, 0.08);
 }
@@ -33,10 +33,14 @@ body {
   padding: 0;
   background: var(--background);
   color: var(--foreground);
+  overflow-x: hidden;
 }
 
 body {
   font-family: "Teodor", Georgia, serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
@@ -52,6 +56,33 @@ a {
 
 p {
   margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: from-font;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline-offset: 4px;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+.modal-scroll-lock {
+  overflow: hidden;
 }
 
 .font-display {
@@ -84,6 +115,18 @@ p {
   color: var(--muted);
 }
 
+.text-foreground {
+  color: var(--foreground);
+}
+
+.text-foreground-65 {
+  color: rgba(17, 17, 17, 0.65);
+}
+
+.text-foreground-78 {
+  color: rgba(17, 17, 17, 0.78);
+}
+
 .text-red-accent {
   color: var(--accent-red);
 }
@@ -92,8 +135,22 @@ p {
   color: var(--accent-blue);
 }
 
+.outline-blue-accent {
+  outline-color: var(--accent-blue);
+}
+
 .rule-soft {
   border-color: var(--rule);
+}
+
+.border-foreground-soft {
+  border-color: var(--rule);
+}
+
+.overlay-copy {
+  text-rendering: auto;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
 }
 
 @keyframes marquee {
@@ -108,8 +165,49 @@ p {
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee 30s linear infinite;
+  animation: marquee 58.59375s linear infinite;
   will-change: transform;
+}
+
+.project-wordmark {
+  font-family: "Perfektta", Arial, sans-serif;
+  font-size: clamp(56px, 8vw, 110px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  word-break: keep-all;
+}
+
+.project-wordmark--modal {
+  font-size: clamp(52px, 7vw, 110px);
+  white-space: normal;
+}
+
+.project-wordmark--list {
+  white-space: nowrap;
+}
+
+.project-client-inline {
+  font-family: "Teodor", Georgia, serif;
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: 1.05;
+  letter-spacing: 0;
+  margin-left: clamp(10px, 1vw, 18px);
+  transform: translateY(0.12em);
+  white-space: nowrap;
+}
+
+.project-client-inline--modal {
+  font-size: clamp(16px, 1.3vw, 20px);
+}
+
+.project-client-mobile {
+  font-family: "Teodor", Georgia, serif;
+  font-size: 16px;
+  margin-top: clamp(6px, 0.6vw, 10px);
+}
+
+.project-client-mobile--modal {
+  font-size: 18px;
 }
 
 .text-h1 {
@@ -137,11 +235,29 @@ p {
     font-size: 52px;
     line-height: 0.95;
   }
-}
 
   .text-h2,
   .text-p1 {
     font-size: 16px;
   }
 
+  .project-wordmark {
+    font-size: clamp(42px, 14vw, 72px);
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+  }
 
+  .project-wordmark--list {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee-track {
+    animation-play-state: paused;
+  }
+}
