@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     template: "%s | YKS",
   },
   icons: {
-    icon: [{ url: "/yks-purple.png?v=1", type: "image/png" }],
-    shortcut: ["/yks-purple.png?v=1"],
+    icon: [{ url: "/yks-purple.png?v=2", type: "image/png" }],
+    shortcut: ["/yks-purple.png?v=2"],
   },
   description:
     "YKS is the portfolio site for Yad Kram Studio, showcasing design and creative work across brand, campaign, film, and digital.",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/share-card.png",
         width: 1200,
         height: 630,
         alt: "YKS social share card",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     title: "YKS",
     description:
       "Portfolio work across design, creative direction, campaign, film, and digital.",
-    images: ["/twitter-image"],
+    images: ["/share-card.png"],
   },
 };
 
