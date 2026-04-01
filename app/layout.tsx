@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.yks.works"),
   title: {
     default: "YKS",
     template: "%s | YKS",
   },
   icons: {
-    icon: [{ url: "/yks.svg?v=3", type: "image/svg+xml" }],
-    shortcut: ["/yks.svg?v=3"],
+    icon: [{ url: "/yks-purple.png?v=1", type: "image/png" }],
+    shortcut: ["/yks-purple.png?v=1"],
   },
   description:
     "YKS is the portfolio site for Yad Kram Studio, showcasing design and creative work across brand, campaign, film, and digital.",
@@ -21,10 +22,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/projects/joined-1.jpg",
-        width: 1600,
-        height: 900,
-        alt: "YKS portfolio preview",
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "YKS social share card",
       },
     ],
   },
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
     title: "YKS",
     description:
       "Portfolio work across design, creative direction, campaign, film, and digital.",
-    images: ["/projects/joined-1.jpg"],
+    images: ["/twitter-image"],
   },
 };
 

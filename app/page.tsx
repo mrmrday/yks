@@ -910,10 +910,8 @@ export default function Home() {
         <div className="px-5 py-4 md:px-10 md:py-6">
           <div className="max-w-[1400px]">
             <img
-              src="/projects/yks.svg"
+              src="/yks-purple.png"
               alt="YKS"
-              width="914"
-              height="282"
               className="h-auto w-[184px] md:w-[245px]"
               loading="eager"
               decoding="async"
@@ -1056,12 +1054,12 @@ export default function Home() {
               className="relative w-full max-w-[1240px] overflow-hidden rounded-[22px] border border-white/20 bg-[#f3f0ea] shadow-[0_30px_120px_rgba(0,0,0,0.35)] sm:rounded-[28px]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="absolute right-3 top-3 z-20 hidden sm:block md:right-6 md:top-6">
+              <div className="pointer-events-none sticky top-3 z-30 flex justify-end px-3 pt-3 sm:px-4 md:px-6">
                 <button
                   ref={closeButtonRef}
                   type="button"
                   onClick={closeModal}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/92 text-[24px] leading-none text-black shadow-[0_10px_40px_rgba(0,0,0,0.18)] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:h-12 sm:w-12 sm:text-[26px]"
+                  className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full bg-white/92 text-[24px] leading-none text-black shadow-[0_10px_40px_rgba(0,0,0,0.18)] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:h-12 sm:w-12 sm:text-[26px]"
                   aria-label="Close modal"
                 >
                   ×
@@ -1127,18 +1125,6 @@ export default function Home() {
 
                 <div className="px-5 py-6 sm:px-6 sm:py-8 md:px-10 md:py-10">
                   <div className="max-w-[980px]">
-                    <div className="mb-4 flex justify-end sm:hidden">
-                      <button
-                        ref={closeButtonRef}
-                        type="button"
-                        onClick={closeModal}
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-black/6 text-[24px] leading-none text-black transition hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"
-                        aria-label="Close modal"
-                      >
-                        ×
-                      </button>
-                    </div>
-
                     <div id="project-modal-title" className="flex flex-col">
                       {renderProjectWordmark(selectedProject, false, true)}
                     </div>
