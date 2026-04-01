@@ -1045,6 +1045,18 @@ export default function Home() {
           className="fixed inset-0 z-[100] overflow-y-auto bg-black/72 px-2 py-2 backdrop-blur-xl sm:px-4 sm:py-4 md:px-6 md:py-6"
           onClick={closeModal}
         >
+          <div className="pointer-events-none fixed right-5 top-5 z-[120] sm:right-7 sm:top-7 md:right-10 md:top-10">
+            <button
+              ref={closeButtonRef}
+              type="button"
+              onClick={closeModal}
+              className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full bg-white/92 text-[24px] leading-none text-black shadow-[0_10px_40px_rgba(0,0,0,0.18)] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:h-12 sm:w-12 sm:text-[26px]"
+              aria-label="Close modal"
+            >
+              ×
+            </button>
+          </div>
+
           <div className="flex min-h-full items-start justify-center py-10 sm:items-center">
             <div
               ref={modalRef}
@@ -1054,18 +1066,6 @@ export default function Home() {
               className="relative w-full max-w-[1240px] overflow-hidden rounded-[22px] border border-white/20 bg-[#f3f0ea] shadow-[0_30px_120px_rgba(0,0,0,0.35)] sm:rounded-[28px]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="pointer-events-none sticky top-3 z-30 flex justify-end px-3 pt-3 sm:px-4 md:px-6">
-                <button
-                  ref={closeButtonRef}
-                  type="button"
-                  onClick={closeModal}
-                  className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full bg-white/92 text-[24px] leading-none text-black shadow-[0_10px_40px_rgba(0,0,0,0.18)] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:h-12 sm:w-12 sm:text-[26px]"
-                  aria-label="Close modal"
-                >
-                  ×
-                </button>
-              </div>
-
               <div>
                 <div className="relative overflow-hidden bg-[#dcd7cb]">
                   <div className="absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-t from-black/20 to-transparent" />
@@ -1129,14 +1129,14 @@ export default function Home() {
                       {renderProjectWordmark(selectedProject, false, true)}
                     </div>
 
-                    <div className="mt-5 max-w-[1080px] space-y-4 sm:mt-6 sm:space-y-5">
+                    <div className="mt-5 max-w-[1080px] space-y-4 sm:mt-6 sm:space-y-5 md:mt-5 md:space-y-4">
                       {descriptionParagraphs.map((paragraph, index) => (
                         <p
                           key={`${selectedProject.title}-${index}`}
                           className={`${
                             index === 0
-                              ? "max-w-[980px] text-[22px] leading-[1.02] tracking-[-0.03em] text-foreground sm:text-[28px] sm:leading-[1.04] md:text-[40px]"
-                              : "max-w-[1040px] text-[17px] leading-[1.38] text-foreground-78 sm:text-[18px] sm:leading-[1.42] md:text-[20px] md:leading-[1.45]"
+                              ? "max-w-[980px] text-[22px] leading-[1.02] tracking-[-0.03em] text-foreground sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]"
+                              : "max-w-[1040px] text-[17px] leading-[1.38] text-foreground-78 sm:text-[18px] sm:leading-[1.42] md:text-[20px] md:leading-[1.34]"
                           }`}
                         >
                           {paragraph}
