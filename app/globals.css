@@ -200,16 +200,6 @@ video {
   font-size: clamp(16px, 1.3vw, 20px);
 }
 
-.project-client-mobile {
-  font-family: "Teodor", Georgia, serif;
-  font-size: 16px;
-  margin-top: clamp(6px, 0.6vw, 10px);
-}
-
-.project-client-mobile--modal {
-  font-size: 18px;
-}
-
 .text-h1 {
   font-family: "Perfektta", Arial, sans-serif;
   font-size: 110px;
@@ -249,6 +239,19 @@ video {
 
   .project-wordmark--list {
     white-space: normal;
+  }
+
+  .project-client-inline {
+    display: inline;
+    font-size: 0.5em;
+    margin-left: 0.22em;
+    line-height: 1;
+    vertical-align: baseline;
+    transform: none;
+  }
+
+  .project-client-inline--modal {
+    font-size: 0.42em;
   }
 }
 

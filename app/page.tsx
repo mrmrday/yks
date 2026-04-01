@@ -85,17 +85,6 @@ const COVERAGE_LINKS = [
 const BRANDS =
   "Aries Rise, Baracuta, Brooks, Canon, Champion, Disney, Google, KIA, McDonald’s, Nutella, Smirnoff, Starling Bank.";
 const CONTACT_EMAIL = "hello@yks.com";
-const HEADER_LOGO_MASK_STYLE = {
-  backgroundColor: "#7B00FF",
-  WebkitMaskImage: "url('/projects/yks.svg')",
-  WebkitMaskRepeat: "no-repeat",
-  WebkitMaskSize: "contain",
-  WebkitMaskPosition: "left center",
-  maskImage: "url('/projects/yks.svg')",
-  maskRepeat: "no-repeat",
-  maskSize: "contain",
-  maskPosition: "left center",
-} as const;
 
 function getProjectGallery(project: Project) {
   if (project.gallery && project.gallery.length > 0) {
@@ -227,22 +216,12 @@ function renderProjectWordmark(
         )}
 
         <span
-          className={`hidden md:inline ${
+          className={`project-client-inline ${
             isActive ? "text-white/80" : "text-foreground-65"
-          } project-client-inline ${
-            isModal ? "project-client-inline--modal" : ""
-          }`}
+          } ${isModal ? "project-client-inline--modal" : ""}`}
         >
           {project.client}
         </span>
-      </span>
-
-      <span
-        className={`project-client-mobile md:hidden ${
-          isModal ? "project-client-mobile--modal" : ""
-        } ${isActive ? "text-white/80" : "text-foreground-65"}`}
-      >
-        {project.client}
       </span>
     </>
   );
@@ -505,6 +484,9 @@ export default function Home() {
   const [ukTimeZone, setUkTimeZone] = useState("UK");
   const [londonWeather, setLondonWeather] = useState("London weather loading...");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [isModalVideoPlaying, setIsModalVideoPlaying] = useState(false);
+  const [isModalVideoMuted, setIsModalVideoMuted] = useState(true);
 
   /* =========================
     REFS
@@ -512,6 +494,7 @@ export default function Home() {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
+  const modalVideoRef = useRef<HTMLVideoElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const projectListSectionRef = useRef<HTMLElement | null>(null);
   const projectButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -575,6 +558,26 @@ export default function Home() {
       mediaQuery.removeEventListener("change", updatePreference);
     };
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+
+    function updateViewport() {
+      setIsMobileViewport(mediaQuery.matches);
+    }
+
+    updateViewport();
+    mediaQuery.addEventListener("change", updateViewport);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateViewport);
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsModalVideoPlaying(false);
+    setIsModalVideoMuted(true);
+  }, [selectedProject]);
 
   useEffect(() => {
     const weatherCodeLabels: Record<number, string> = {
@@ -800,6 +803,31 @@ export default function Home() {
     );
   }
 
+  function toggleModalVideoPlayback() {
+    const video = modalVideoRef.current;
+
+    if (!video) return;
+
+    if (video.paused) {
+      void video.play();
+      setIsModalVideoPlaying(true);
+      return;
+    }
+
+    video.pause();
+    setIsModalVideoPlaying(false);
+  }
+
+  function toggleModalVideoMuted() {
+    const video = modalVideoRef.current;
+
+    if (!video) return;
+
+    const nextMuted = !video.muted;
+    video.muted = nextMuted;
+    setIsModalVideoMuted(nextMuted);
+  }
+
   function handleProjectPreview(project: Project, index: number) {
     setActiveProject(project);
     setActiveProjectIndex(index);
@@ -881,11 +909,12 @@ export default function Home() {
       <div className="fixed left-0 right-0 top-[38px] z-30 md:top-[43px]">
         <div className="px-5 py-4 md:px-10 md:py-6">
           <div className="max-w-[1400px]">
-            <div
-              role="img"
-              aria-label="YKS"
-              className="h-[57px] w-[184px] md:h-[76px] md:w-[245px]"
-              style={HEADER_LOGO_MASK_STYLE}
+            <img
+              src="/projects/yks.svg"
+              alt="YKS"
+              className="h-[57px] w-[184px] object-contain object-left md:h-[76px] md:w-[245px]"
+              loading="eager"
+              decoding="async"
             />
           </div>
         </div>
@@ -926,7 +955,7 @@ export default function Home() {
             ========================= */}
             <section
               ref={projectListSectionRef}
-              className="relative min-h-[420px] md:col-span-12 md:min-h-[480px]"
+              className="relative min-h-0 md:col-span-12 md:min-h-[480px]"
               onMouseLeave={clearProjectPreview}
             >
               <div className="grid md:grid-cols-12 md:gap-x-8">
@@ -999,7 +1028,7 @@ export default function Home() {
               </div>
             </section>
 
-            <div className="mt-16 pr-24 text-blue-accent md:hidden">
+            <div className="mt-8 pr-24 text-blue-accent md:hidden">
               <LowerInfoSection mobile />
             </div>
 
@@ -1025,7 +1054,7 @@ export default function Home() {
               className="relative w-full max-w-[1240px] overflow-hidden rounded-[22px] border border-white/20 bg-[#f3f0ea] shadow-[0_30px_120px_rgba(0,0,0,0.35)] sm:rounded-[28px]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="absolute right-3 top-3 z-20 sm:right-4 sm:top-4 md:right-6 md:top-6">
+              <div className="absolute right-3 top-3 z-20 hidden sm:block md:right-6 md:top-6">
                 <button
                   ref={closeButtonRef}
                   type="button"
@@ -1041,14 +1070,50 @@ export default function Home() {
                 <div className="relative overflow-hidden bg-[#dcd7cb]">
                   <div className="absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-t from-black/20 to-transparent" />
                   {isVideoAsset(selectedProject.previewSrc) ? (
-                    <video
-                      src={selectedProject.previewSrc}
-                      muted
-                      playsInline
-                      controls
-                      preload="metadata"
-                      className="aspect-[4/5] w-full bg-black object-cover sm:aspect-[16/10] md:aspect-[16/9]"
-                    />
+                    <>
+                      <video
+                        ref={modalVideoRef}
+                        src={selectedProject.previewSrc}
+                        muted
+                        playsInline
+                        controls={!isMobileViewport}
+                        preload="metadata"
+                        onPlay={() => setIsModalVideoPlaying(true)}
+                        onPause={() => setIsModalVideoPlaying(false)}
+                        onVolumeChange={(event) =>
+                          setIsModalVideoMuted(event.currentTarget.muted)
+                        }
+                        className="aspect-[4/5] w-full bg-black object-cover sm:aspect-[16/10] md:aspect-[16/9]"
+                      />
+
+                      {isMobileViewport && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={toggleModalVideoMuted}
+                            className="absolute right-4 top-4 z-20 flex min-w-[64px] items-center justify-center rounded-full bg-black/45 px-3 py-2 text-[13px] font-medium uppercase tracking-[0.08em] text-white backdrop-blur-sm transition hover:bg-black/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                            aria-label={
+                              isModalVideoMuted ? "Unmute video" : "Mute video"
+                            }
+                          >
+                            {isModalVideoMuted ? "Sound" : "Mute"}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={toggleModalVideoPlayback}
+                            className="absolute inset-0 z-10 flex items-center justify-center"
+                            aria-label={
+                              isModalVideoPlaying ? "Pause video" : "Play video"
+                            }
+                          >
+                            <span className="flex min-w-[86px] items-center justify-center rounded-full bg-black/42 px-5 py-4 text-[14px] font-medium uppercase tracking-[0.08em] text-white backdrop-blur-sm">
+                              {isModalVideoPlaying ? "Pause" : "Play"}
+                            </span>
+                          </button>
+                        </>
+                      )}
+                    </>
                   ) : (
                     <img
                       src={selectedProject.previewSrc}
@@ -1060,18 +1125,30 @@ export default function Home() {
 
                 <div className="px-5 py-6 sm:px-6 sm:py-8 md:px-10 md:py-10">
                   <div className="max-w-[980px]">
+                    <div className="mb-4 flex justify-end sm:hidden">
+                      <button
+                        ref={closeButtonRef}
+                        type="button"
+                        onClick={closeModal}
+                        className="flex h-10 w-10 items-center justify-center rounded-full bg-black/6 text-[24px] leading-none text-black transition hover:bg-black/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"
+                        aria-label="Close modal"
+                      >
+                        ×
+                      </button>
+                    </div>
+
                     <div id="project-modal-title" className="flex flex-col">
                       {renderProjectWordmark(selectedProject, false, true)}
                     </div>
 
-                    <div className="mt-8 max-w-[1080px] space-y-5 sm:mt-10 sm:space-y-6">
+                    <div className="mt-5 max-w-[1080px] space-y-4 sm:mt-6 sm:space-y-5">
                       {descriptionParagraphs.map((paragraph, index) => (
                         <p
                           key={`${selectedProject.title}-${index}`}
                           className={`${
                             index === 0
-                              ? "max-w-[980px] text-[22px] leading-[1.08] tracking-[-0.03em] text-foreground sm:text-[28px] md:text-[40px]"
-                              : "max-w-[1040px] text-[17px] leading-[1.5] text-foreground-78 sm:text-[18px] md:text-[20px] md:leading-[1.55]"
+                              ? "max-w-[980px] text-[22px] leading-[1.02] tracking-[-0.03em] text-foreground sm:text-[28px] sm:leading-[1.04] md:text-[40px]"
+                              : "max-w-[1040px] text-[17px] leading-[1.38] text-foreground-78 sm:text-[18px] sm:leading-[1.42] md:text-[20px] md:leading-[1.45]"
                           }`}
                         >
                           {paragraph}
