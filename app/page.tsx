@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
@@ -14,7 +15,44 @@ type Project = {
   hoverPreviewSrc?: string;
   modalSrc?: string;
   gallery?: string[];
-  description: string;
+  subtitle?: string;
+  body?: string;
+  credits?: ProjectCredit[];
+  mediaSections?: ProjectMediaSection[];
+  description?: string;
+};
+
+type ProjectCredit = {
+  label: string;
+  value: string;
+  href?: string;
+};
+
+type ProjectMediaSection = {
+  title: string;
+  body?: string;
+  credits?: ProjectCredit[];
+};
+
+const CREDIT_LINKS: Record<string, string> = {
+  "Marko Anstice": "https://markoanstice.com/motion",
+  "The Sunshine Company": "https://thesunshinecompany.com/",
+  "Wolff Olins": "https://wolffolins.com/",
+  "Alice Coffey": "https://uk.linkedin.com/in/alicecoffey",
+  "Conor Knight": "https://uk.linkedin.com/in/conorknight",
+  "Jeremy Downes": "https://uk.linkedin.com/in/jeremy-downes-1b083398",
+  "Zarah Mughal": "https://uk.linkedin.com/in/zarah-mughal",
+  "Thomas Reynhart": "https://uk.linkedin.com/in/thomas-reynhart-5177131a0",
+  "Gina Atanesian": "https://uk.linkedin.com/in/gina-onegina",
+  "Studio Soeur": "https://www.studiosoeur.co/",
+  "Wonderhood Studios": "https://wonderhoodstudios.com/",
+  Frisian: "https://www.frisian.co.uk/",
+  "Choé Bailly": "https://www.instagram.com/cloebailly/",
+  "Sam Wright": "https://www.instagram.com/_sam_wright_photo/?hl=en",
+  "Sam Pilling": "https://www.sampilling.com/",
+  "Elliot Dear": "https://www.blinkink.co.uk/directors/elliot-dear",
+  "Artem Nadyozhin": "https://www.nadyozh.in/",
+  Ekstasy: "https://www.ekstasy.com/",
 };
 
 type GalleryLayoutItem = {
@@ -84,7 +122,13 @@ const COVERAGE_LINKS = [
 
 const BRANDS =
   "Aries Rise, Baracuta, Brooks, Canon, Champion, Disney, Google, KIA, McDonald’s, Nutella, Smirnoff, Starling Bank.";
-const CONTACT_EMAIL = "hello@yks.com";
+const CONTACT_EMAIL = "hello@yks.works";
+const ABOUT_PARAGRAPHS = [
+  "YKS, a London-based creative and design director working across brand, campaigns and design systems.",
+  "I spent eight years at Starling Bank, helping shape the brand from early-stage challenger to one of the UK’s leading digital banks. As design lead within the marketing team, I led a multidisciplinary group of designers overseeing the visual output of the bank across film, photography, campaigns, debit cards and packaging. The focus was building a clear, consistent visual language that could scale with the business while staying simple, human and distinctive.",
+  "I’m drawn to ideas that are easy to understand but hard to ignore, ideas that can stretch across different channels without losing their clarity. My approach is collaborative and hands-on, working closely with writers, designers, filmmakers and developers to shape things from concept through to execution.",
+  "Now working independently, I’m interested in projects that sit across brand and product, especially where there’s a chance to define something from the ground up, or rethink what’s already there.",
+];
 
 function getProjectGallery(project: Project) {
   if (project.gallery && project.gallery.length > 0) {
@@ -159,12 +203,8 @@ function getGalleryLayout(
     ];
   }
 
-  if (project.title === "Set Your Business Free" && gallery.length >= 2) {
-    return [{ type: "pair", assets: gallery.slice(0, 2), index: 0 }];
-  }
-
-  if (project.title === "Set Yourself Free" && gallery.length >= 2) {
-    return [{ type: "pair", assets: gallery.slice(0, 2), index: 0 }];
+  if (project.title === "Set Yourself Free" && gallery.length >= 3) {
+    return [{ type: "triptych", assets: gallery.slice(0, 3), index: 0 }];
   }
 
   if (
@@ -195,7 +235,14 @@ function renderProjectWordmark(
       <span
         className={`project-wordmark ${
           isModal ? "project-wordmark--modal" : "project-wordmark--list"
-        } ${isActive ? "relative z-30 text-red-accent" : ""}`}
+        } ${
+          isActive
+            ? "relative z-30 text-red-accent"
+            : isModal
+              ? "text-[#7B00FF]"
+              : ""
+        }`}
+        aria-label={`${project.title}, ${project.client}`}
       >
         {project.title === "Starling Bank Rebrand" ? (
           <>
@@ -215,6 +262,7 @@ function renderProjectWordmark(
           project.title
         )}
 
+        {" "}
         <span
           className={`project-client-inline ${
             isActive ? "text-white/80" : "text-foreground-65"
@@ -332,6 +380,90 @@ function MediaAsset({
   );
 }
 
+function splitParagraphs(value?: string) {
+  return value
+    ? value
+        .split("\n\n")
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean)
+    : [];
+}
+
+function renderCreditValue(value: string, href?: string) {
+  if (href) {
+    return [
+      <a
+        key={`${value}-${href}`}
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className="underline decoration-current/35 underline-offset-2 transition-opacity hover:opacity-70"
+      >
+        {value}
+      </a>,
+    ];
+  }
+
+  const linkedNames = Object.keys(CREDIT_LINKS).sort(
+    (a, b) => b.length - a.length
+  );
+  const parts: ReactNode[] = [];
+  let remaining = value;
+  let keyIndex = 0;
+
+  while (remaining.length > 0) {
+    const nextMatch = linkedNames
+      .map((name) => {
+        const index = remaining.indexOf(name);
+        return index >= 0 ? { name, index } : null;
+      })
+      .filter((match): match is { name: string; index: number } => match !== null)
+      .sort((a, b) => a.index - b.index || b.name.length - a.name.length)[0];
+
+    if (!nextMatch) {
+      parts.push(<span key={`text-${keyIndex++}`}>{remaining}</span>);
+      break;
+    }
+
+    if (nextMatch.index > 0) {
+      parts.push(
+        <span key={`text-${keyIndex++}`}>
+          {remaining.slice(0, nextMatch.index)}
+        </span>
+      );
+    }
+
+    parts.push(
+      <a
+        key={`link-${keyIndex++}`}
+        href={CREDIT_LINKS[nextMatch.name]}
+        target="_blank"
+        rel="noreferrer"
+        className="underline decoration-current/35 underline-offset-2 transition-opacity hover:opacity-70"
+      >
+        {nextMatch.name}
+      </a>
+    );
+
+    remaining = remaining.slice(nextMatch.index + nextMatch.name.length);
+  }
+
+  return parts;
+}
+
+function CreditsList({ credits }: { credits: ProjectCredit[] }) {
+  return (
+    <div className="space-y-1.5 text-[15px] leading-[1.35] text-black sm:text-[16px]">
+      {credits.map((credit) => (
+        <p key={`${credit.label}-${credit.value}`}>
+          <span className="font-['Perfektta']">{credit.label}:</span>{" "}
+          {renderCreditValue(credit.value, credit.href)}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export default function Home() {
   /* =========================
     DATA
@@ -349,26 +481,32 @@ export default function Home() {
         "/projects/starling-brand.mp4",
         "/projects/starling-brand.jpg",
       ],
-      description:
-        "Starling — Good With Money\n\nA major brand update repositioning Starling Bank around a simple but ambitious idea: everyone can be good with money.\n\nMoving beyond awareness, the platform reframed financial wellbeing as a behaviour, not a balance — shifting the narrative from wealth to confidence, control and everyday decision-making. Built in response to a challenging economic landscape, the work set out to normalise money management and make it feel accessible, human and within reach.\n\nThe relaunch extended across identity, product and communications — from a refreshed visual system and app experience to a new brand voice and integrated campaign ecosystem. Developed in collaboration with Wolff Olins and The Sunshine Company, the platform unified Starling’s proposition around a single mission: helping the UK build a healthier relationship with money.\n\nA shift from product-first to people-first thinking — positioning Starling not just as a bank, but as a tool for better financial habits.",
-    },
-    {
-      title: "The Bank Built For You",
-      client: "Starling Bank",
-      mediaType: "video",
-      previewSrc: "/projects/tbbfy-preview.mp4",
-      hoverPreviewSrc: "/projects/tbbfy-hover.mp4",
-      gallery: [
-        "/projects/tbbfy-1.mp4",
-        "/projects/tbbfy-2.mp4",
-        "/projects/tbbfy-3.jpg",
-        "/projects/tbbfy-4.jpg",
-        "/projects/tbbfy-5.jpg",
-        "/projects/tbbfy-6.jpg",
-        "/projects/tbbfy-7.jpg",
+      subtitle: "Pioneering banking for enterprising people.",
+      body:
+        "A major brand update repositioning Starling Bank around a simple but ambitious idea: everyone can be good with money.\n\nMoving beyond awareness, the platform reframed financial wellbeing as a behaviour, not a balance — shifting the narrative from wealth to confidence, control and everyday decision-making. Built in response to a challenging economic landscape, the work set out to normalise money management and make it feel accessible, human and within reach.\n\nThe relaunch extended across identity, product and communications — from a refreshed visual system and app experience to a new brand voice and integrated campaign ecosystem. Developed in collaboration with Wolff Olins and The Sunshine Company, the platform unified Starling’s proposition around a single mission: helping the UK build a healthier relationship with money.\n\nA shift from product-first to people-first thinking — positioning Starling not just as a bank, but as a tool for better financial habits.",
+      mediaSections: [
+        {
+          title: "The Design",
+          body:
+            "An updated art direction, design and visual system was needed to inspire and continue a pattern and behaviour of action. Our art direction needed a new set of visual principles for static and moving image that clearly linked back to our new brand strategy. Active teal and starling purple as the core palette, with new vibrant secondary colours to support. An updated wordmark to envoke confidence and recognition - most noticeably dropping Bank from the naming. Starling’s typographic system pairs Avantt, a contemporary geometric grotesk, with CoFo Sans Semi Mono, a system-led semi-monospaced sans. Avantt carries the brand voice—confident, modern and approachable—while CoFo introduces a layer of precision and digital clarity. Together, they balance expression with functionality, reflecting both the human and technical sides of modern banking. We needed a distinctive illustration style to add more depth and personality to the brand, enrich complex topics in app – capturing how the product worked and benefit customers in a satisfying and simple way. The direction was agreed with WO and developed in house.",
+          credits: [
+            { label: "Design Direction", value: "Wolff Olins" },
+            {
+              label: "Design Team",
+              value:
+                "YKS, Alice Coffey, Conor Knight, Jeremy Downes, Thomas Reynhart, Zarah Mughal.",
+            },
+          ],
+        },
+        {
+          title: "The Story",
+          credits: [
+            { label: "Creative and Design", value: "YKS" },
+            { label: "Animation", value: "Marko Anstice" },
+            { label: "Brand Strategy", value: "The Sunshine Company" },
+          ],
+        },
       ],
-      description:
-        "A brand platform repositioning Starling around the lives of its customers. The work translates product into narrative — embedding features within everyday, character-led stories rather than traditional financial messaging. Built as an integrated system across film, OOH and digital, the platform creates a consistent language that adapts across audiences and life stages. A shift from feature-led advertising to human-centred storytelling.",
     },
     {
       title: "Joined At The Chip",
@@ -381,8 +519,43 @@ export default function Home() {
         "/projects/joined-4.jpg",
         "/projects/joined-5.jpg",
       ],
-      description:
-        "Managing bills, saving for shared goals or just splitting the dinner tab: do life together with a joint account.\n\nCommitted media spend but the need to change direction at short notice. Executed in house with support from trusted friends. Proud of this one.",
+      body:
+        "Managing bills, saving for shared goals or just splitting the dinner tab: do life together with a joint account. Committed media spend but a need to change direction at short notice. Executed in house with support from trusted friends. Proud of this one.",
+      credits: [
+        { label: "Creative and Design", value: "YKS" },
+        { label: "Photography", value: "Gina Atanesian" },
+        { label: "Production", value: "Studio Soeur" },
+        {
+          label: "Retouch",
+          value: "Frisian",
+          href: "https://www.frisian.co.uk/",
+        },
+      ],
+    },
+    {
+      title: "The Bank Built For You",
+      client: "Starling Bank",
+      mediaType: "video",
+      previewSrc: "/projects/tbbfy-preview.mp4",
+      hoverPreviewSrc: "/projects/tbbfy-hover.mp4",
+      gallery: [
+        "/projects/tbbfy-1.mp4",
+        "/projects/tbbfy-2.mp4",
+        "/projects/tbbfy-3.jpg",
+        "/projects/tbbfy-4.jpg",
+        "/projects/tbbfy-5.jpeg",
+        "/projects/tbbfy-6.jpeg",
+        "/projects/tbbfy-7.jpeg",
+      ],
+      subtitle:
+        "A brand platform repositioning Starling around the lives of its customers.",
+      body:
+        "The work translates product into narrative — embedding features within everyday, character-led stories rather than traditional financial messaging. Built as an integrated system across film, OOH and digital nationally, the platform creates a consistent language that adapts across audiences and life stages. A shift from feature-led advertising to human-centred storytelling.",
+      credits: [
+        { label: "Brand Strategy and Creative", value: "Wonderhood Studios" },
+        { label: "Art Direction and Design", value: "YKS" },
+        { label: "Photography", value: "Gina Atanesian" },
+      ],
     },
     {
       title: "Football Sponsorship",
@@ -402,8 +575,14 @@ export default function Home() {
         "/projects/sfc-6.jpg",
       ],
       modalSrc: "/projects/womens-euro-2022-4.jpg",
-      description:
-        "A long-term initiative built through women’s football. Launching with UEFA Women’s EURO 2022, the work transformed sponsorship into a fully integrated system — spanning national OOH, ambassador storytelling and product-led activations. The ‘Our Time’ campaign brought elite players into everyday contexts, reframing representation through a distinctly Starling lens. Extended through club partnerships, including front-of-shirt sponsorship of Southampton FC Women, alongside community investment and fan-led initiatives. A sustained expression of brand purpose — positioning Starling at the intersection of culture, equality and sport.",
+      subtitle:
+        "A long-term brand platform built through women’s football—positioning Starling as an active driver of visibility, access and equality within the game.",
+      body:
+        "Launching with UEFA Women’s EURO 2022, the work transformed sponsorship into a fully integrated system spanning national OOH, broadcast, ambassador storytelling and product-led activations. The Our Time campaign brought elite players into everyday contexts, reframing representation through a distinctly Starling lens—shifting perception from occasional visibility to cultural normality.\n\nBeyond the tournament, the platform extends into sustained partnerships and grassroots investment. This includes front-of-shirt sponsorship of Southampton FC Women, support for emerging talent, and initiatives designed to increase participation and access at a community level. Starling also committed to equal media investment and long-term backing of the women’s game—ensuring visibility isn’t cyclical, but continuous.\n\nExecuted across film, digital, social and live experiences, the system balances cultural storytelling with tangible action—embedding the brand within the fabric of the sport rather than sitting adjacent to it. A sustained expression of brand purpose—positioning Starling at the intersection of culture, equality and sport, delivering on Starling’s brand strategy in a meaningful way.",
+      credits: [
+        { label: "Creative and Design", value: "YKS" },
+        { label: "Production", value: "Studio Soeur" },
+      ],
     },
     {
       title: "Set Your Business Free",
@@ -411,13 +590,16 @@ export default function Home() {
       mediaType: "video",
       previewSrc: "/projects/set-your-business-free-preview.mp4",
       hoverPreviewSrc: "/projects/set-your-business-free-hover.mp4",
-      modalSrc: "/projects/set-your-business-free-2.mp4",
-      gallery: [
-        "/projects/set-your-business-free.mp4",
-        "/projects/set-your-business-free-2.mp4",
+      modalSrc: "/projects/set-your-business-free.mp4",
+      gallery: ["/projects/set-your-business-free-2.mp4"],
+      body:
+        "An extension of the previously launched Set Yourself Free, Starling Bank’s Set Your Business Free campaign reframed the relationship between small businesses and traditional banking—shifting the narrative from constraint to liberation. Built around the insight that legacy banks create friction, the work positions Starling as a tool for independence: intuitive, fast, and built for how modern businesses actually operate.\n\nCreatively, the campaign leans into a bold, expressive visual language—combining confident typography, kinetic motion, and a sense of lightness that mirrors the idea of release. Business owners are depicted not as burdened operators, but as energised individuals, freed from outdated systems and able to focus on what matters most: running and growing their business.\n\nThe identity system was designed to work fluidly across film, digital, and out-of-home—balancing clarity with character. Messaging is direct and optimistic, while the visual world introduces a sense of uplift and momentum, reinforcing the core proposition at every touchpoint. This was a shift from functional banking communications to something more human and emotionally resonant—positioning Starling not just as a better bank, but as an enabler of progress.",
+      credits: [
+        { label: "Creative", value: "Wonderhood Studios" },
+        { label: "Director", value: "Choé Bailly" },
+        { label: "Photography", value: "Sam Wright" },
+        { label: "Design", value: "YKS" },
       ],
-      description:
-        "A continuation of Starling’s ‘Here to Change’ platform, extending the idea of freedom into the context of business banking. Set Your Business Free translates product benefits into a simple, visual system — using levitation as a metaphor for removing friction across everyday operations. Centred around a series of character-led vignettes, the campaign captures small business environments in moments of transformation, where tools, materials and ultimately the founders themselves lift into weightlessness. The work balances cinematic craft with functional clarity — embedding features such as zero fees and mobile-first tools within an emotive narrative. Deployed across TV and VOD, the campaign reframes business banking as an enabler of ease and momentum — shifting perception from administrative burden to a sense of lightness, control and forward movement.",
     },
     {
       title: "Set Yourself Free",
@@ -427,11 +609,20 @@ export default function Home() {
       hoverPreviewSrc: "/projects/set-yourself-free-hover.mp4",
       modalSrc: "/projects/set-yourself-free.mp4",
       gallery: [
-        "/projects/set-yourself-free-preview.mp4",
-        "/projects/set-yourself-free.mp4",
+        "/projects/set-yourself-free-1.png",
+        "/projects/set-yourself-free-2.png",
+        "/projects/set-yourself-free-3.png",
       ],
-      description:
-        "A brand campaign introducing Starling’s ‘Here to Change’ platform, designed to reframe the relationship people have with their bank. Set Yourself Free translates product proposition into a clear visual metaphor — using weightlessness and flight to express liberation from legacy banking systems. Centred around a cinematic narrative, the work contrasts the friction of traditional banking with the ease of a mobile-first experience, establishing a distinctive brand language built on freedom, simplicity and control.",
+      subtitle:
+        "Set Yourself Free marked a step-change in Starling’s brand platform—broadening the proposition from business banking to a universal, human truth: people feel constrained by traditional banks.",
+      body:
+        "Rooted in the idea of liberation, the campaign dramatises the everyday frustrations of legacy banking and contrasts them with the immediacy and control offered by Starling. It reframes switching not as a chore, but as a release—simple, empowering, and long overdue.\n\nThe creative direction embraces a heightened, almost surreal visual language. Scenes of restriction give way to openness and movement, using choreography, pacing, and spatial transitions to bring the concept of “freedom” to life. Typography and motion work in tandem—light, expansive, and unencumbered—reinforcing the emotional shift at the heart of the campaign.\n\nDesigned as a fully integrated system, the work spans film, digital, and out-of-home, maintaining a clear and confident voice throughout. The result is a campaign that moves beyond product messaging, positioning Starling as a catalyst for change—giving people the tools, and the confidence, to break free.",
+      credits: [
+        { label: "Creative", value: "Wonderhood Studios" },
+        { label: "Director", value: "Sam Pilling" },
+        { label: "Photography", value: "Artem Nadyozhin" },
+        { label: "Design", value: "YKS" },
+      ],
     },
     {
       title: "Kick On",
@@ -440,8 +631,15 @@ export default function Home() {
       previewSrc: "/projects/kick-on.mp4",
       hoverPreviewSrc: "/projects/kick-on-hover.mp4",
       modalSrc: "/projects/kick-on.mp4",
-      description:
-        "An extension of Starling’s women’s football platform, designed to address structural barriers across grassroots participation. Kick On translates brand into system — providing fully funded kits, coaching support and practical resources that enable clubs to grow. Alongside this, the Kick On Pitch Pack acts as a designed intervention, supporting teams in securing fair access to playing facilities. A move from campaign to infrastructure — embedding the brand within the everyday realities of the game.",
+      subtitle:
+        "A continuation of Starling’s broader platform, turning brand purpose into practical impact.",
+      body:
+        "Kick On extends Starling’s commitment to women’s football beyond visibility into tangible support—addressing the structural barriers that limit participation at grassroots level. Built as an open, ongoing initiative, Kick On provides funding, resources and equipment to teams and organisations across the UK. From financial grants to partnerships like Gift of Kit, the programme tackles one of the game’s most immediate challenges: access.\n\nBy removing practical obstacles—whether that’s kit, facilities or funding—it enables more women and girls to start, continue and thrive in the sport. Creatively, the work shifts away from traditional campaign mechanics toward something more embedded and utility-led. The identity is intentionally simple and direct—designed to scale, flex and live within communities rather than sit above them.\n\nMessaging prioritises clarity and action, reinforcing Starling’s role not just as a sponsor, but as an enabler. Executed across digital platforms, partnerships and community touchpoints, Kick On operates as both campaign and infrastructure—supporting the game from the ground up.",
+      credits: [
+        { label: "Creative and Production", value: "Studio Soeur" },
+        { label: "Art Direction and Design", value: "YKS" },
+        { label: "Photography", value: "Gina Atanesian" },
+      ],
     },
     {
       title: "Helping Business Fly",
@@ -455,8 +653,15 @@ export default function Home() {
         "/projects/helping-business-fly-2.jpg",
         "/projects/helping-business-fly-3.jpg",
       ],
-      description:
-        "A campaign positioning Starling’s business offering through a cinematic metaphor of entrepreneurial risk and reward. Helping Business Fly translates the realities of building a business into a physical journey — from instability and uncertainty to clarity and control. Blending live action with miniature model-making and practical effects, the work introduces a crafted, tactile visual language that distinguishes it from typical financial advertising. The narrative follows a founder navigating turbulence before breaking through the clouds. The campaign reframes business banking from a functional service into a source of confidence and momentum — aligning the brand with ambition, resilience and growth.",
+      subtitle:
+        "Helping Your Business Fly introduced Starling’s business proposition to a wider audience—shifting perception from challenger bank to credible, fully-fledged partner for small businesses.",
+      body:
+        "Built around the metaphor of flight, the campaign visualises the experience of running a business with Starling as lighter, faster and more controlled. Administrative burden and financial friction are replaced with clarity and momentum—positioning the bank as an enabler of progress rather than an obstacle to it.\n\nThe creative centres on a distinctive, cinematic world where business owners are quite literally lifted—moving through space with a sense of ease and acceleration. This visual metaphor is carried through film, supported by a clean, confident graphic system that reinforces simplicity and control across digital and out-of-home executions.\n\nBalancing product truth with brand storytelling, the campaign marked a step forward in tone—more assured, more expressive, and designed to build emotional resonance alongside functional understanding. A foundational moment in establishing Starling’s business offering—bringing clarity, confidence and a sense of forward motion to the category.",
+      credits: [
+        { label: "Creative and Production", value: "Wonderhood Studios" },
+        { label: "Director", value: "Elliot Dear" },
+        { label: "Design", value: "YKS" },
+      ],
     },
 
     {
@@ -466,8 +671,14 @@ export default function Home() {
       previewSrc: "/hello-starling-bank.mp4",
       hoverPreviewSrc: "/hello-starling-bank-hover.mp4",
       modalSrc: "/hello-starling-bank.mp4",
-      description:
-        "Highlighting the ease and simplicity of Starling's signing up process.",
+      subtitle: "A new kind of banking experience – anywhere life takes you.",
+      body:
+        "Hello, Starling Bank. introduced a new way of banking—one that lives entirely on your phone, and works wherever you are. At the time, that shift wasn’t yet familiar. Banking was still tied to branches, opening hours and physical spaces. The campaign set out to make this new behaviour feel normal—showing that managing your money could happen anywhere, in the middle of everyday life.\n\nThe creative focuses on simple, uplifting and recognisable moments—on the street, at home, on the move—where banking becomes part of the flow rather than a separate task. The product is always in hand, quietly doing its job, removing the need to plan, queue or wait.\n\nVisually, the direction is clean and unobtrusive, allowing the idea to land clearly. A light, conversational tone reinforces the sense of ease—positioning Starling as something immediate, intuitive and always available. A straightforward introduction to a new behaviour—making mobile-first banking feel not just possible, but obvious.",
+      credits: [
+        { label: "Creative and Design", value: "YKS" },
+        { label: "Production", value: "Ekstasy" },
+        { label: "Photography", value: "Sam Wright" },
+      ],
     },
   ];
 
@@ -485,6 +696,7 @@ export default function Home() {
   const [londonWeather, setLondonWeather] = useState("London weather loading...");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isModalVideoPlaying, setIsModalVideoPlaying] = useState(false);
   const [isModalVideoMuted, setIsModalVideoMuted] = useState(true);
 
@@ -654,7 +866,7 @@ export default function Home() {
     GSAP TRANSITION
   ========================= */
   useEffect(() => {
-    if (!selectedProject) return;
+    if (!selectedProject && !isAboutOpen) return;
 
     const overlay = overlayRef.current;
     const modal = modalRef.current;
@@ -662,7 +874,41 @@ export default function Home() {
 
     closeButtonRef.current?.focus();
 
-    if (!overlay || !modal || !preview || prefersReducedMotion) {
+    if (!overlay || !modal || prefersReducedMotion) {
+      if (overlay && modal) {
+        gsap.set(overlay, { opacity: 1 });
+        gsap.set(modal, { opacity: 1 });
+      }
+      return;
+    }
+
+    if (isAboutOpen && !selectedProject) {
+      gsap.set(overlay, { opacity: 0 });
+      gsap.set(modal, { opacity: 0, y: 18 });
+
+      const tl = gsap.timeline();
+
+      tl.to(overlay, {
+        opacity: 1,
+        duration: 0.22,
+        ease: "power2.out",
+      }).to(
+        modal,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.3,
+          ease: "power2.out",
+        },
+        0.06
+      );
+
+      return () => {
+        tl.kill();
+      };
+    }
+
+    if (!preview) {
       if (overlay && modal) {
         gsap.set(overlay, { opacity: 1 });
         gsap.set(modal, { opacity: 1 });
@@ -725,12 +971,12 @@ export default function Home() {
       tl.kill();
       clone.remove();
     };
-  }, [prefersReducedMotion, selectedProject]);
+  }, [isAboutOpen, prefersReducedMotion, selectedProject]);
 
   useEffect(() => {
     const { body } = document;
 
-    if (selectedProject) {
+    if (selectedProject || isAboutOpen) {
       body.classList.add("modal-scroll-lock");
     } else {
       body.classList.remove("modal-scroll-lock");
@@ -739,17 +985,17 @@ export default function Home() {
     return () => {
       body.classList.remove("modal-scroll-lock");
     };
-  }, [selectedProject]);
+  }, [isAboutOpen, selectedProject]);
 
   useEffect(() => {
-    if (selectedProject) return;
+    if (selectedProject || isAboutOpen) return;
 
     const lastFocusedIndex = lastFocusedProjectIndexRef.current;
 
     if (lastFocusedIndex !== null) {
       projectButtonRefs.current[lastFocusedIndex]?.focus();
     }
-  }, [selectedProject]);
+  }, [isAboutOpen, selectedProject]);
 
   useEffect(() => {
     if (!previewRef.current || prefersReducedMotion) return;
@@ -778,16 +1024,21 @@ export default function Home() {
   function closeModal() {
     if (prefersReducedMotion) {
       setSelectedProject(null);
+      setIsAboutOpen(false);
       return;
     }
 
     if (!overlayRef.current || !modalRef.current) {
       setSelectedProject(null);
+      setIsAboutOpen(false);
       return;
     }
 
     const tl = gsap.timeline({
-      onComplete: () => setSelectedProject(null),
+      onComplete: () => {
+        setSelectedProject(null);
+        setIsAboutOpen(false);
+      },
     });
 
     tl.to(modalRef.current, {
@@ -862,20 +1113,12 @@ export default function Home() {
   const selectedProjectGalleryLayout = selectedProject
     ? getGalleryLayout(selectedProject, selectedProjectGallery)
     : [];
-  const rawDescriptionParagraphs = selectedProject
-    ? selectedProject.description
-        .split("\n\n")
-        .map((paragraph) => paragraph.trim())
-        .filter(Boolean)
+  const subtitle = selectedProject?.subtitle;
+  const descriptionParagraphs = selectedProject
+    ? splitParagraphs(selectedProject.body ?? selectedProject.description)
     : [];
-  const descriptionParagraphs =
-    selectedProject &&
-    rawDescriptionParagraphs.length > 0 &&
-    normalizeText(rawDescriptionParagraphs[0]).includes(
-      normalizeText(selectedProject.title)
-    )
-      ? rawDescriptionParagraphs.slice(1)
-      : rawDescriptionParagraphs;
+  const heroSrc = selectedProject?.modalSrc ?? selectedProject?.previewSrc;
+  const isModalOpen = Boolean(selectedProject) || isAboutOpen;
   const tickerItems = [
     "YKS",
     "Design and Creative",
@@ -891,7 +1134,10 @@ export default function Home() {
         TOP TICKER
       ========================= */}
 
-      <div className="fixed left-0 right-0 top-0 z-40 overflow-hidden border-b border-foreground-soft bg-[#efefec]">
+      <div
+        className="fixed left-0 right-0 top-0 z-40 overflow-hidden border-b border-foreground-soft bg-[#efefec]"
+        aria-hidden="true"
+      >
         <div className="marquee-track flex w-max whitespace-nowrap py-2.5 md:py-3">
           {Array.from({ length: 8 })
             .flatMap(() => tickerItems)
@@ -920,6 +1166,20 @@ export default function Home() {
         </div>
       </div>
 
+      <div
+        className={`fixed right-5 top-[56px] z-30 transition-opacity md:right-10 md:top-[74px] ${
+          isModalOpen ? "pointer-events-none opacity-0" : "opacity-100"
+        }`}
+      >
+        <button
+          type="button"
+          onClick={() => setIsAboutOpen(true)}
+          className="font-['Perfektta'] text-[13px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[16px]"
+        >
+          About
+        </button>
+      </div>
+
       <div className="fixed bottom-0 left-0 right-0 z-30 hidden text-blue-accent md:block">
         <div className="px-6 py-5 md:px-10 md:py-6">
           <div className="max-w-[1400px]">
@@ -930,12 +1190,12 @@ export default function Home() {
 
       <div
         className={`fixed bottom-4 right-5 z-30 transition-opacity md:bottom-6 md:right-10 ${
-          selectedProject ? "pointer-events-none opacity-0" : "opacity-100"
+          isModalOpen ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >
         <a
           href={`mailto:${CONTACT_EMAIL}`}
-          className="text-[13px] text-blue-accent transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[16px]"
+          className="font-['Perfektta'] text-[13px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[16px]"
         >
           {CONTACT_EMAIL}
         </a>
@@ -1039,7 +1299,7 @@ export default function Home() {
       {/* =========================
         MODAL
       ========================= */}
-      {selectedProject && (
+      {isModalOpen && (
         <>
           <div className="pointer-events-none fixed right-5 top-5 z-[130] sm:right-7 sm:top-7 md:right-10 md:top-10">
             <button
@@ -1058,185 +1318,258 @@ export default function Home() {
             className="fixed inset-0 z-[100] overflow-y-auto bg-black/72 px-2 py-2 backdrop-blur-xl sm:px-4 sm:py-4 md:px-6 md:py-6"
             onClick={closeModal}
           >
+            {isAboutOpen ? (
+              <div className="pointer-events-none absolute inset-0 bg-white/65" />
+            ) : null}
             <div className="flex min-h-full items-start justify-center py-10 sm:items-center">
-              <div
-                ref={modalRef}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="project-modal-title"
-                className="relative w-full max-w-[1240px] overflow-hidden rounded-[22px] border border-white/20 bg-[#f3f0ea] shadow-[0_30px_120px_rgba(0,0,0,0.35)] sm:rounded-[28px]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="relative overflow-hidden bg-[#dcd7cb]">
-                  <div className="absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-t from-black/20 to-transparent" />
-                  {isVideoAsset(selectedProject.previewSrc) ? (
-                    <>
-                      <video
-                        ref={modalVideoRef}
-                        src={selectedProject.previewSrc}
-                        muted
-                        playsInline
-                        controls={!isMobileViewport}
-                        preload="metadata"
-                        onPlay={() => setIsModalVideoPlaying(true)}
-                        onPause={() => setIsModalVideoPlaying(false)}
-                        onVolumeChange={(event) =>
-                          setIsModalVideoMuted(event.currentTarget.muted)
-                        }
-                        className="aspect-[4/5] w-full bg-black object-cover sm:aspect-[16/10] md:aspect-[16/9]"
-                      />
+              {selectedProject ? (
+                <div
+                  ref={modalRef}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="project-modal-title"
+                  className="relative w-full max-w-[1240px] overflow-hidden rounded-[22px] border border-white/20 bg-[#f3f0ea] shadow-[0_30px_120px_rgba(0,0,0,0.35)] sm:rounded-[28px]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="relative overflow-hidden bg-[#dcd7cb]">
+                    <div className="absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-t from-black/20 to-transparent" />
+                    {heroSrc && isVideoAsset(heroSrc) ? (
+                      <>
+                        <video
+                          ref={modalVideoRef}
+                          src={heroSrc}
+                          muted
+                          playsInline
+                          controls={!isMobileViewport}
+                          preload="metadata"
+                          onPlay={() => setIsModalVideoPlaying(true)}
+                          onPause={() => setIsModalVideoPlaying(false)}
+                          onVolumeChange={(event) =>
+                            setIsModalVideoMuted(event.currentTarget.muted)
+                          }
+                          className="aspect-[4/5] w-full bg-black object-cover sm:aspect-[16/10] md:aspect-[16/9]"
+                        />
 
-                      {isMobileViewport && (
-                        <>
-                          <button
-                            type="button"
-                            onClick={toggleModalVideoMuted}
-                            className="font-display absolute right-4 top-4 z-20 flex min-w-[84px] items-center justify-center rounded-full bg-black/45 px-4 py-2 text-[18px] leading-none tracking-[-0.02em] text-white backdrop-blur-sm transition hover:bg-black/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                            aria-label={
-                              isModalVideoMuted ? "Unmute video" : "Mute video"
-                            }
-                          >
-                            {isModalVideoMuted ? "sound" : "mute"}
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={toggleModalVideoPlayback}
-                            className="absolute inset-0 z-10 flex items-center justify-center"
-                            aria-label={
-                              isModalVideoPlaying ? "Pause video" : "Play video"
-                            }
-                          >
-                            <span className="font-display flex min-w-[108px] items-center justify-center rounded-full bg-black/42 px-6 py-4 text-[22px] leading-none tracking-[-0.02em] text-white backdrop-blur-sm">
-                              {isModalVideoPlaying ? "pause" : "play"}
-                            </span>
-                          </button>
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    <img
-                      src={selectedProject.previewSrc}
-                      alt={selectedProject.title}
-                      className="aspect-[4/5] w-full object-cover sm:aspect-[16/10] md:aspect-[16/9]"
-                    />
-                  )}
-                </div>
-
-                <div className="px-5 py-6 sm:px-6 sm:py-8 md:px-10 md:py-10">
-                  <div className="max-w-[980px]">
-                    <div id="project-modal-title" className="flex flex-col">
-                      {renderProjectWordmark(selectedProject, false, true)}
-                    </div>
-
-                    <div className="mt-5 max-w-[1080px] space-y-4 sm:mt-6 sm:space-y-5 md:mt-4 md:space-y-3">
-                      {descriptionParagraphs.map((paragraph, index) => (
-                        <p
-                          key={`${selectedProject.title}-${index}`}
-                          className={`${
-                            index === 0
-                              ? "max-w-[980px] text-[22px] leading-[1.02] tracking-[-0.03em] text-foreground sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]"
-                              : "max-w-[1040px] text-[17px] leading-[1.38] text-foreground-78 sm:text-[18px] sm:leading-[1.42] md:text-[20px] md:leading-[1.28]"
-                          }`}
-                        >
-                          {paragraph}
-                        </p>
-                      ))}
-                    </div>
-
-                    {selectedProjectGallery.length > 0 && (
-                      <div className="mt-10 border-t border-foreground-soft pt-6 sm:mt-12 sm:pt-8">
-                        <div className="space-y-4 sm:space-y-6 md:space-y-8">
-                          {selectedProjectGalleryLayout.map((item) => (
-                            <article
-                              key={`${selectedProject?.title}-${item.index}`}
-                              className={`w-full ${getGalleryFrameClass(
-                                item.index,
-                                selectedProjectGalleryLayout.length
-                              )}`}
+                        {isMobileViewport && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={toggleModalVideoMuted}
+                              className="font-display absolute right-4 top-4 z-20 flex min-w-[84px] items-center justify-center rounded-full bg-black/45 px-4 py-2 text-[18px] leading-none tracking-[-0.02em] text-white backdrop-blur-sm transition hover:bg-black/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                              aria-label={
+                                isModalVideoMuted ? "Unmute video" : "Mute video"
+                              }
                             >
-                              {item.type === "triptych" ? (
-                                <div className="grid gap-2 rounded-[20px] border border-black/5 bg-[#e4ddd0] p-2 sm:gap-3 sm:rounded-[24px] sm:p-3 md:grid-cols-3 md:gap-4 md:p-4">
-                                  {item.assets.map((src, assetIndex) => (
-                                    <div
-                                      key={src}
-                                      className="flex items-center justify-center overflow-hidden rounded-[16px] bg-[#d8d1c2] sm:rounded-[18px]"
-                                    >
-                                      <img
-                                        src={src}
-                                        alt={`${selectedProject.title} triptych image ${assetIndex + 1}`}
-                                        loading="lazy"
-                                        className="h-full max-h-[68vh] w-full object-contain"
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : item.type === "quad" ? (
-                                <div className="grid gap-2 rounded-[20px] border border-black/5 bg-[#e4ddd0] p-2 sm:grid-cols-2 sm:gap-3 sm:rounded-[24px] sm:p-3 md:gap-4 md:p-4">
-                                  {item.assets.map((src, assetIndex) => (
-                                    <div
-                                      key={src}
-                                      className="flex items-center justify-center overflow-hidden rounded-[16px] bg-[#d8d1c2] sm:rounded-[18px]"
-                                    >
-                                      <img
-                                        src={src}
-                                        alt={`${selectedProject.title} grid image ${assetIndex + 1}`}
-                                        loading="lazy"
-                                        className="h-full max-h-[52vh] w-full object-cover"
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : item.type === "grid6" ? (
-                                <div className="grid gap-2 rounded-[20px] border border-black/5 bg-[#e4ddd0] p-2 sm:grid-cols-2 sm:gap-3 sm:rounded-[24px] sm:p-3 md:grid-cols-3 md:gap-4 md:p-4">
-                                  {item.assets.map((src, assetIndex) => (
-                                    <div
-                                      key={src}
-                                      className="flex items-center justify-center overflow-hidden rounded-[16px] bg-[#d8d1c2] sm:rounded-[18px]"
-                                    >
-                                      <img
-                                        src={src}
-                                        alt={`${selectedProject.title} supporting image ${assetIndex + 1}`}
-                                        loading="lazy"
-                                        className="h-full max-h-[42vh] w-full object-cover"
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : item.type === "pair" ? (
-                                <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-                                  {item.assets.map((src, assetIndex) => (
-                                    <div
-                                      key={src}
-                                      className="flex justify-center overflow-hidden rounded-[20px] border border-black/5 bg-[#e4ddd0] sm:rounded-[24px]"
-                                    >
-                                      <MediaAsset
-                                        src={src}
-                                        alt={`${selectedProject.title} paired asset ${assetIndex + 1}`}
-                                        className="max-h-[72vh] w-full bg-black object-cover"
-                                        imageClassName="max-h-[72vh] w-full object-contain"
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <div className="flex justify-center overflow-hidden rounded-[20px] border border-black/5 bg-[#e4ddd0] sm:rounded-[24px]">
-                                  <MediaAsset
-                                    src={item.assets[0]}
-                                    alt={`${selectedProject.title} asset ${item.index + 1}`}
-                                    className="max-h-[78vh] w-full bg-black object-cover"
-                                    imageClassName="max-h-[78vh] w-full object-contain"
-                                  />
-                                </div>
-                              )}
-                            </article>
-                          ))}
-                        </div>
-                      </div>
+                              {isModalVideoMuted ? "sound" : "mute"}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={toggleModalVideoPlayback}
+                              className="absolute inset-0 z-10 flex items-center justify-center"
+                              aria-label={
+                                isModalVideoPlaying ? "Pause video" : "Play video"
+                              }
+                            >
+                              <span className="font-display flex min-w-[108px] items-center justify-center rounded-full bg-black/42 px-6 py-4 text-[22px] leading-none tracking-[-0.02em] text-white backdrop-blur-sm">
+                                {isModalVideoPlaying ? "pause" : "play"}
+                              </span>
+                            </button>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <img
+                        src={heroSrc}
+                        alt={selectedProject.title}
+                        className="aspect-[4/5] w-full object-cover sm:aspect-[16/10] md:aspect-[16/9]"
+                      />
                     )}
                   </div>
+
+                  <div className="px-5 py-6 sm:px-6 sm:py-8 md:px-10 md:py-10">
+                    <div className="max-w-[980px]">
+                      <div id="project-modal-title" className="flex flex-col">
+                        {renderProjectWordmark(selectedProject, false, true)}
+                      </div>
+
+                      <div className="mt-5 max-w-[1080px] space-y-4 sm:mt-6 sm:space-y-5 md:mt-4 md:space-y-3">
+                        {subtitle ? (
+                          <p className="max-w-[980px] font-['Perfektta'] text-[22px] leading-[1.02] tracking-[-0.03em] text-[#2F4DFF] sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]">
+                            {subtitle}
+                          </p>
+                        ) : null}
+
+                        {descriptionParagraphs.map((paragraph, index) => (
+                          <p
+                            key={`${selectedProject.title}-${index}`}
+                            className="max-w-[1040px] text-[17px] leading-[1.38] text-[#000000] sm:text-[18px] sm:leading-[1.42] md:text-[20px] md:leading-[1.28]"
+                          >
+                            {paragraph}
+                          </p>
+                        ))}
+
+                        {selectedProject.credits?.length ? (
+                          <div className="space-y-3 pt-1">
+                            <p className="font-['Perfektta'] text-[18px] leading-none tracking-[-0.01em] text-[#2F4DFF] sm:text-[20px]">
+                              Credits
+                            </p>
+                            <CreditsList credits={selectedProject.credits} />
+                          </div>
+                        ) : null}
+                      </div>
+
+                      {selectedProjectGallery.length > 0 && (
+                        <div className="mt-6 border-t border-foreground-soft pt-4 sm:mt-8 sm:pt-5">
+                          <div className="space-y-6 sm:space-y-8 md:space-y-10">
+                            {selectedProjectGalleryLayout.map((item) => (
+                              <article
+                                key={`${selectedProject?.title}-${item.index}`}
+                                className={`w-full ${getGalleryFrameClass(
+                                  item.index,
+                                  selectedProjectGalleryLayout.length
+                                )}`}
+                              >
+                                {selectedProject.mediaSections?.[item.index] ? (
+                                  <div className="mb-4 space-y-3 sm:mb-5 sm:space-y-4">
+                                    <p className="max-w-[980px] font-['Perfektta'] text-[22px] leading-[1.02] tracking-[-0.03em] text-[#2F4DFF] sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]">
+                                      {selectedProject.mediaSections[item.index].title}
+                                    </p>
+                                    {splitParagraphs(
+                                      selectedProject.mediaSections[item.index].body
+                                    ).map((paragraph, sectionParagraphIndex) => (
+                                      <p
+                                        key={`${selectedProject.title}-${item.index}-${sectionParagraphIndex}`}
+                                        className="max-w-[1040px] text-[17px] leading-[1.38] text-[#000000] sm:text-[18px] sm:leading-[1.42] md:text-[20px] md:leading-[1.28]"
+                                      >
+                                        {paragraph}
+                                      </p>
+                                    ))}
+                                    {selectedProject.mediaSections[item.index].credits
+                                      ?.length ? (
+                                      <CreditsList
+                                        credits={
+                                          selectedProject.mediaSections[item.index]
+                                            .credits as ProjectCredit[]
+                                        }
+                                      />
+                                    ) : null}
+                                  </div>
+                                ) : null}
+                                {item.type === "triptych" ? (
+                                  <div className="grid gap-2 rounded-[20px] border border-black/5 bg-[#e4ddd0] p-2 sm:gap-3 sm:rounded-[24px] sm:p-3 md:grid-cols-3 md:gap-4 md:p-4">
+                                    {item.assets.map((src, assetIndex) => (
+                                      <div
+                                        key={src}
+                                        className="flex items-center justify-center overflow-hidden rounded-[16px] bg-[#d8d1c2] sm:rounded-[18px]"
+                                      >
+                                        <img
+                                          src={src}
+                                          alt={`${selectedProject.title} triptych image ${assetIndex + 1}`}
+                                          loading="lazy"
+                                          className="h-full max-h-[68vh] w-full object-contain"
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : item.type === "quad" ? (
+                                  <div className="grid gap-2 rounded-[20px] border border-black/5 bg-[#e4ddd0] p-2 sm:grid-cols-2 sm:gap-3 sm:rounded-[24px] sm:p-3 md:gap-4 md:p-4">
+                                    {item.assets.map((src, assetIndex) => (
+                                      <div
+                                        key={src}
+                                        className="flex items-center justify-center overflow-hidden rounded-[16px] bg-[#d8d1c2] sm:rounded-[18px]"
+                                      >
+                                        <img
+                                          src={src}
+                                          alt={`${selectedProject.title} grid image ${assetIndex + 1}`}
+                                          loading="lazy"
+                                          className="h-full max-h-[52vh] w-full object-cover"
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : item.type === "grid6" ? (
+                                  <div className="grid gap-2 rounded-[20px] border border-black/5 bg-[#e4ddd0] p-2 sm:grid-cols-2 sm:gap-3 sm:rounded-[24px] sm:p-3 md:grid-cols-3 md:gap-4 md:p-4">
+                                    {item.assets.map((src, assetIndex) => (
+                                      <div
+                                        key={src}
+                                        className="flex items-center justify-center overflow-hidden rounded-[16px] bg-[#d8d1c2] sm:rounded-[18px]"
+                                      >
+                                        <img
+                                          src={src}
+                                          alt={`${selectedProject.title} supporting image ${assetIndex + 1}`}
+                                          loading="lazy"
+                                          className="h-full max-h-[42vh] w-full object-cover"
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : item.type === "pair" ? (
+                                  <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+                                    {item.assets.map((src, assetIndex) => (
+                                      <div
+                                        key={src}
+                                        className="flex justify-center overflow-hidden rounded-[20px] border border-black/5 bg-[#e4ddd0] sm:rounded-[24px]"
+                                      >
+                                        <MediaAsset
+                                          src={src}
+                                          alt={`${selectedProject.title} paired asset ${assetIndex + 1}`}
+                                          className="max-h-[72vh] w-full bg-black object-cover"
+                                          imageClassName="max-h-[72vh] w-full object-contain"
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="flex justify-center overflow-hidden rounded-[20px] border border-black/5 bg-[#e4ddd0] sm:rounded-[24px]">
+                                    <MediaAsset
+                                      src={item.assets[0]}
+                                      alt={`${selectedProject.title} asset ${item.index + 1}`}
+                                      className="max-h-[78vh] w-full bg-black object-cover"
+                                      imageClassName="max-h-[78vh] w-full object-contain"
+                                    />
+                                  </div>
+                                )}
+                              </article>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div
+                  ref={modalRef}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="about-modal-title"
+                  className="relative w-full max-w-[1040px] overflow-hidden rounded-[22px] bg-transparent sm:rounded-[28px]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="px-5 py-8 sm:px-6 sm:py-10 md:px-10 md:py-12">
+                    <div className="max-w-[860px]">
+                      <div id="about-modal-title" className="sr-only">
+                        About
+                      </div>
+                      <div className="space-y-4 sm:space-y-5 md:space-y-4">
+                        {ABOUT_PARAGRAPHS.map((paragraph, index) => (
+                          <p
+                            key={`about-${index}`}
+                            className={`max-w-[860px] text-[#000000] ${
+                              index === 0
+                                ? "font-['Perfektta'] text-[22px] leading-[1.02] tracking-[-0.03em] text-[#7B00FF] sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]"
+                                : "text-[17px] leading-[1.38] sm:text-[18px] sm:leading-[1.42] md:text-[20px] md:leading-[1.28]"
+                            }`}
+                          >
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </>

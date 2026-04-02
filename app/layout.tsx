@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.yks.works"),
+  metadataBase: new URL("https://yks.works"),
+  alternates: {
+    canonical: "/",
+  },
   title: {
     default: "YKS",
     template: "%s | YKS",
@@ -17,6 +20,7 @@ export const metadata: Metadata = {
     title: "YKS",
     description:
       "Portfolio work across design, creative direction, campaign, film, and digital.",
+    url: "https://yks.works",
     siteName: "YKS",
     locale: "en_GB",
     type: "website",
