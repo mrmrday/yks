@@ -1163,7 +1163,7 @@ export default function Home() {
         <div className="px-5 py-4 md:px-10 md:py-6">
           <div className="max-w-[1400px]">
             <img
-              src="/yks-purple.png"
+              src="/yks-full.png"
               alt="YKS"
               className="h-auto w-[184px] md:w-[245px]"
               loading="eager"

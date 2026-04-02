@@ -6,7 +6,7 @@ export default function NotFound() {
       <div className="mx-auto max-w-[1400px]">
         <div className="mb-10 md:mb-14">
           <img
-            src="/yks-purple.png"
+            src="/yks-full.png"
             alt="YKS"
             className="h-auto w-[184px] md:w-[245px]"
           />
