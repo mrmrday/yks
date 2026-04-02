@@ -1040,12 +1040,8 @@ export default function Home() {
         MODAL
       ========================= */}
       {selectedProject && (
-        <div
-          ref={overlayRef}
-          className="fixed inset-0 z-[100] overflow-y-auto bg-black/72 px-2 py-2 backdrop-blur-xl sm:px-4 sm:py-4 md:px-6 md:py-6"
-          onClick={closeModal}
-        >
-          <div className="pointer-events-none fixed right-5 top-5 z-[120] sm:right-7 sm:top-7 md:right-10 md:top-10">
+        <>
+          <div className="pointer-events-none fixed right-5 top-5 z-[130] sm:right-7 sm:top-7 md:right-10 md:top-10">
             <button
               ref={closeButtonRef}
               type="button"
@@ -1057,16 +1053,20 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="flex min-h-full items-start justify-center py-10 sm:items-center">
-            <div
-              ref={modalRef}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="project-modal-title"
-              className="relative w-full max-w-[1240px] overflow-hidden rounded-[22px] border border-white/20 bg-[#f3f0ea] shadow-[0_30px_120px_rgba(0,0,0,0.35)] sm:rounded-[28px]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div>
+          <div
+            ref={overlayRef}
+            className="fixed inset-0 z-[100] overflow-y-auto bg-black/72 px-2 py-2 backdrop-blur-xl sm:px-4 sm:py-4 md:px-6 md:py-6"
+            onClick={closeModal}
+          >
+            <div className="flex min-h-full items-start justify-center py-10 sm:items-center">
+              <div
+                ref={modalRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="project-modal-title"
+                className="relative w-full max-w-[1240px] overflow-hidden rounded-[22px] border border-white/20 bg-[#f3f0ea] shadow-[0_30px_120px_rgba(0,0,0,0.35)] sm:rounded-[28px]"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="relative overflow-hidden bg-[#dcd7cb]">
                   <div className="absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-t from-black/20 to-transparent" />
                   {isVideoAsset(selectedProject.previewSrc) ? (
@@ -1129,14 +1129,14 @@ export default function Home() {
                       {renderProjectWordmark(selectedProject, false, true)}
                     </div>
 
-                    <div className="mt-5 max-w-[1080px] space-y-4 sm:mt-6 sm:space-y-5 md:mt-5 md:space-y-4">
+                    <div className="mt-5 max-w-[1080px] space-y-4 sm:mt-6 sm:space-y-5 md:mt-4 md:space-y-3">
                       {descriptionParagraphs.map((paragraph, index) => (
                         <p
                           key={`${selectedProject.title}-${index}`}
                           className={`${
                             index === 0
                               ? "max-w-[980px] text-[22px] leading-[1.02] tracking-[-0.03em] text-foreground sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]"
-                              : "max-w-[1040px] text-[17px] leading-[1.38] text-foreground-78 sm:text-[18px] sm:leading-[1.42] md:text-[20px] md:leading-[1.34]"
+                              : "max-w-[1040px] text-[17px] leading-[1.38] text-foreground-78 sm:text-[18px] sm:leading-[1.42] md:text-[20px] md:leading-[1.28]"
                           }`}
                         >
                           {paragraph}
@@ -1239,7 +1239,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </main>
   );
