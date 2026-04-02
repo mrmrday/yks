@@ -1181,7 +1181,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => setIsAboutOpen(true)}
-          className="font-['Perfektta'] text-[13px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[16px]"
+          className="font-['Perfektta'] text-[16px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[19px]"
         >
           About
         </button>
@@ -1202,7 +1202,7 @@ export default function Home() {
       >
         <a
           href={`mailto:${CONTACT_EMAIL}`}
-          className="font-['Perfektta'] text-[13px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[16px]"
+          className="font-['Perfektta'] text-[16px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[19px]"
         >
           {CONTACT_EMAIL}
         </a>
