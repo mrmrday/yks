@@ -11,8 +11,11 @@ export const metadata: Metadata = {
     template: "%s | YKS",
   },
   icons: {
-    icon: [{ url: "/yks-full.png?v=3", type: "image/png" }],
-    shortcut: ["/yks-full.png?v=3"],
+    icon: [
+      { url: "/favicon.png?v=1", type: "image/png" },
+      { url: "/favicon.ico?v=1", type: "image/x-icon" },
+    ],
+    shortcut: ["/favicon.ico?v=1"],
   },
   description:
     "YKS is the portfolio site for Yad Kram Studio, showcasing design and creative work across brand, campaign, film, and digital.",
