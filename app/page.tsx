@@ -1315,12 +1315,11 @@ export default function Home() {
 
           <div
             ref={overlayRef}
-            className="fixed inset-0 z-[100] overflow-y-auto bg-black/72 px-2 py-2 backdrop-blur-xl sm:px-4 sm:py-4 md:px-6 md:py-6"
+            className={`fixed inset-0 z-[100] overflow-y-auto px-2 py-2 backdrop-blur-xl sm:px-4 sm:py-4 md:px-6 md:py-6 ${
+              isAboutOpen ? "bg-[rgba(255,255,255,0.65)]" : "bg-black/72"
+            }`}
             onClick={closeModal}
           >
-            {isAboutOpen ? (
-              <div className="pointer-events-none absolute inset-0 bg-white/65" />
-            ) : null}
             <div className="flex min-h-full items-start justify-center py-10 sm:items-center">
               {selectedProject ? (
                 <div

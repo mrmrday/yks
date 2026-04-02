@@ -242,16 +242,22 @@ video {
   }
 
   .project-client-inline {
-    display: inline;
-    font-size: 0.25em;
-    margin-left: 0.22em;
-    line-height: 1;
-    vertical-align: baseline;
+    display: block;
+    font-size: 0.28em;
+    margin-left: 0;
+    margin-top: 0.28em;
+    line-height: 1.05;
     transform: none;
+    white-space: normal;
+    opacity: 0.72;
   }
 
   .project-client-inline--modal {
     font-size: 0.25em;
+    display: inline;
+    margin-left: 0.22em;
+    margin-top: 0;
+    white-space: nowrap;
   }
 }
 
