@@ -165,11 +165,16 @@ function getGalleryFrameClass(index: number, total: number) {
   return patterns[index % patterns.length];
 }
 
-function getPreviewWidth(project: Project) {
-  if (project.title === "Good With Money") return 700;
-  if (project.title === "Kick On") return 600;
-  if (project.title === "The Bank Built For You") return 640;
-  return 700;
+function getPreviewWidth(project: Project, containerWidth?: number) {
+  let baseWidth = 700;
+
+  if (project.title === "Kick On") baseWidth = 600;
+  if (project.title === "The Bank Built For You") baseWidth = 640;
+
+  if (!containerWidth) return baseWidth;
+
+  const responsiveWidth = Math.max(380, Math.round(containerWidth * 0.42));
+  return Math.min(baseWidth, responsiveWidth);
 }
 
 function getGalleryLayout(
@@ -691,6 +696,7 @@ export default function Home() {
     null
   );
   const [activePreviewTop, setActivePreviewTop] = useState<number>(240);
+  const [activePreviewWidth, setActivePreviewWidth] = useState<number>(700);
   const [ukTime, setUkTime] = useState("--:--");
   const [ukTimeZone, setUkTimeZone] = useState("UK");
   const [londonWeather, setLondonWeather] = useState("London weather loading...");
@@ -1093,12 +1099,13 @@ export default function Home() {
     const nextPreviewCenter =
       buttonRect.top - sectionRect.top + buttonRect.height / 2;
 
-    const previewWidth = getPreviewWidth(project);
+    const previewWidth = getPreviewWidth(project, sectionRect.width);
     const previewHeight = previewWidth * 0.62;
     const minTop = previewHeight / 2 + 20;
     const maxTop = sectionRect.height - previewHeight / 2 - 20;
     const clampedTop = Math.min(Math.max(nextPreviewCenter, minTop), maxTop);
 
+    setActivePreviewWidth(previewWidth);
     setActivePreviewTop(clampedTop);
   }
 
@@ -1260,7 +1267,7 @@ export default function Home() {
                         className="absolute left-0 -translate-y-1/2"
                         style={{
                           top: `${activePreviewTop}px`,
-                          width: `${getPreviewWidth(activeProject)}px`,
+                          width: `${activePreviewWidth}px`,
                         }}
                       >
                         {isVideoAsset(getHoverPreviewSrc(activeProject)) ? (
