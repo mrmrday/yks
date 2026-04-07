@@ -557,8 +557,8 @@ export default function Home() {
       body:
         "The work translates product into narrative — embedding features within everyday, character-led stories rather than traditional financial messaging. Built as an integrated system across film, OOH and digital nationally, the platform creates a consistent language that adapts across audiences and life stages. A shift from feature-led advertising to human-centred storytelling.",
       credits: [
-        { label: "Brand Strategy and Creative", value: "Wonderhood Studios" },
-        { label: "Art Direction and Design", value: "YKS" },
+        { label: "Brand Strategy and Creative Direction", value: "Wonderhood Studios" },
+        { label: "Design", value: "YKS" },
         { label: "Photography", value: "Gina Atanesian" },
       ],
     },
