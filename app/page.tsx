@@ -53,6 +53,7 @@ const CREDIT_LINKS: Record<string, string> = {
   "Elliot Dear": "https://www.blinkink.co.uk/directors/elliot-dear",
   "Artem Nadyozhin": "https://www.nadyozh.in/",
   Ekstasy: "https://www.ekstasy.com/",
+  "Nirvana CPH": "https://nirvanacph.com/",
 };
 
 type GalleryLayoutItem = {
@@ -514,7 +515,7 @@ export default function Home() {
       ],
     },
     {
-      title: "Debit Cards and Packaging",
+      title: "Debit Cards & Packaging",
       client: "Starling Bank",
       mediaType: "image",
       previewSrc: "/projects/starling-photo-4.jpg",
@@ -522,7 +523,18 @@ export default function Home() {
       gallery: ["/projects/starling-photo-5.jpg", "/projects/starling-photo-6.png"],
       body:
         "A redesign of Starling’s debit cards and packaging—using one of the bank’s most visible, physical touchpoints to express both product values and brand evolution.\n\nThe project began with the introduction of recycled PVC cards, making Starling the first UK bank to move to rPVC at scale. Rather than treating sustainability as a layer of messaging, the approach was matter-of-fact—embedded into the product itself and communicated with clarity.\n\nThe card became a canvas for the updated brand. As part of the wider relaunch, the design evolved to reflect a more confident, contemporary identity—refined colour, simplified layouts and a clearer expression of the wordmark. Subtle but deliberate changes brought the physical product in line with the broader shift toward a more human, accessible brand.\n\nPackaging followed the same thinking. Reduced, considered and functional, it removed unnecessary elements and focused on the essentials—both in material and communication. The experience was designed to feel straightforward and intentional, reinforcing the idea that good financial habits are built through simple, everyday interactions.\n\nA small but constant presence in customers’ lives—used daily, carried everywhere. The work turns the debit card into more than a utility, aligning product, brand and behaviour in a single, considered object.",
-      credits: [{ label: "Creative and Design", value: "YKS" }],
+      credits: [
+        { label: "Creative and Design", value: "YKS" },
+        {
+          label: "Debit card team",
+          value: "Tag Systems",
+          href: "https://tagsystemsuk.com/",
+        },
+        {
+          label: "Packaging team",
+          value: "Nirvana CPH, Andrew Towers",
+        },
+      ],
     },
     {
       title: "Joined At The Chip",
@@ -887,7 +899,6 @@ export default function Home() {
 
     const overlay = overlayRef.current;
     const modal = modalRef.current;
-    const preview = previewRef.current;
 
     closeButtonRef.current?.focus();
 
@@ -925,70 +936,30 @@ export default function Home() {
       };
     }
 
-    if (!preview) {
-      if (overlay && modal) {
-        gsap.set(overlay, { opacity: 1 });
-        gsap.set(modal, { opacity: 1 });
-      }
-      return;
-    }
-
-    const previewRect = preview.getBoundingClientRect();
-
-    gsap.set(modal, { opacity: 0, display: "block" });
-    const modalRect = modal.getBoundingClientRect();
-    gsap.set(modal, { display: "" });
-
-    const clone = preview.cloneNode(true) as HTMLElement;
-    document.body.appendChild(clone);
-
-    gsap.set(clone, {
-      position: "fixed",
-      top: previewRect.top,
-      left: previewRect.left,
-      width: previewRect.width,
-      height: previewRect.height,
-      margin: 0,
-      zIndex: 200,
-    });
-
     gsap.set(overlay, { opacity: 0 });
-    gsap.set(modal, { opacity: 0 });
+    gsap.set(modal, { opacity: 0, y: 12 });
 
-    const tl = gsap.timeline({
-      defaults: { ease: "power3.inOut" },
-      onComplete: () => clone.remove(),
-    });
+    const tl = gsap.timeline();
 
     tl.to(overlay, {
       opacity: 1,
-      duration: 0.25,
-    })
-      .to(
-        clone,
-        {
-          top: modalRect.top,
-          left: modalRect.left,
-          width: modalRect.width,
-          height: modalRect.height,
-          duration: 0.6,
-        },
-        0
-      )
-      .to(
-        modal,
-        {
-          opacity: 1,
-          duration: 0.25,
-        },
-        0.35
-      );
+      duration: 0.18,
+      ease: "power2.out",
+    }).to(
+      modal,
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.2,
+        ease: "power2.out",
+      },
+      0.02
+    );
 
     return () => {
       tl.kill();
-      clone.remove();
     };
-  }, [isAboutOpen, prefersReducedMotion, selectedProject]);
+  }, [isAboutOpen, isMobileViewport, prefersReducedMotion, selectedProject]);
 
   useEffect(() => {
     const { body } = document;
@@ -1249,8 +1220,16 @@ export default function Home() {
                           projectButtonRefs.current[i] = node;
                         }}
                         type="button"
-                        onMouseEnter={() => handleProjectPreview(project, i)}
-                        onFocus={() => handleProjectPreview(project, i)}
+                        onMouseEnter={() => {
+                          if (!isMobileViewport) {
+                            handleProjectPreview(project, i);
+                          }
+                        }}
+                        onFocus={() => {
+                          if (!isMobileViewport) {
+                            handleProjectPreview(project, i);
+                          }
+                        }}
                         onClick={() => {
                           lastFocusedProjectIndexRef.current = i;
                           setSelectedProject(project);
