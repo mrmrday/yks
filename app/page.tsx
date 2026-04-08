@@ -514,6 +514,17 @@ export default function Home() {
       ],
     },
     {
+      title: "Debit Cards and Packaging",
+      client: "Starling Bank",
+      mediaType: "image",
+      previewSrc: "/projects/starling-photo-4.jpg",
+      modalSrc: "/projects/starling-bank-business-card.jpg",
+      gallery: ["/projects/starling-photo-5.jpg", "/projects/starling-photo-6.png"],
+      body:
+        "A redesign of Starling’s debit cards and packaging—using one of the bank’s most visible, physical touchpoints to express both product values and brand evolution.\n\nThe project began with the introduction of recycled PVC cards, making Starling the first UK bank to move to rPVC at scale. Rather than treating sustainability as a layer of messaging, the approach was matter-of-fact—embedded into the product itself and communicated with clarity.\n\nThe card became a canvas for the updated brand. As part of the wider relaunch, the design evolved to reflect a more confident, contemporary identity—refined colour, simplified layouts and a clearer expression of the wordmark. Subtle but deliberate changes brought the physical product in line with the broader shift toward a more human, accessible brand.\n\nPackaging followed the same thinking. Reduced, considered and functional, it removed unnecessary elements and focused on the essentials—both in material and communication. The experience was designed to feel straightforward and intentional, reinforcing the idea that good financial habits are built through simple, everyday interactions.\n\nA small but constant presence in customers’ lives—used daily, carried everywhere. The work turns the debit card into more than a utility, aligning product, brand and behaviour in a single, considered object.",
+      credits: [{ label: "Creative and Design", value: "YKS" }],
+    },
+    {
       title: "Joined At The Chip",
       client: "Starling Bank",
       mediaType: "image",
