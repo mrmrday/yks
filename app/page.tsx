@@ -458,7 +458,7 @@ function renderCreditValue(value: string, href?: string) {
 
 function CreditsList({ credits }: { credits: ProjectCredit[] }) {
   return (
-    <div className="space-y-1.5 text-[15px] leading-[1.35] text-black sm:text-[16px]">
+    <div className="space-y-1 text-[15px] leading-[1.2] text-black sm:text-[16px] sm:leading-[1.18]">
       {credits.map((credit) => (
         <p key={`${credit.label}-${credit.value}`}>
           <span className="font-['Perfektta']">{credit.label}:</span>{" "}
@@ -1464,12 +1464,17 @@ export default function Home() {
                                     ))}
                                     {selectedProject.mediaSections[item.index].credits
                                       ?.length ? (
-                                      <CreditsList
-                                        credits={
-                                          selectedProject.mediaSections[item.index]
-                                            .credits as ProjectCredit[]
-                                        }
-                                      />
+                                      <div className="space-y-3 pt-1">
+                                        <p className="font-['Perfektta'] text-[18px] leading-none tracking-[-0.01em] text-[#2F4DFF] sm:text-[20px]">
+                                          Credits
+                                        </p>
+                                        <CreditsList
+                                          credits={
+                                            selectedProject.mediaSections[item.index]
+                                              .credits as ProjectCredit[]
+                                          }
+                                        />
+                                      </div>
                                     ) : null}
                                   </div>
                                 ) : null}
