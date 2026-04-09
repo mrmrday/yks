@@ -4,16 +4,89 @@
 
 @font-face {
   font-family: "Perfektta";
-  src: url("/fonts/Perfektta.woff") format("woff");
-  font-weight: normal;
+  src: url("/fonts/Perfektta-Light.otf") format("opentype");
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Teodor";
-  src: url("/fonts/Teodor.woff") format("woff");
-  font-weight: normal;
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-Regular.otf") format("opentype"),
+    url("/fonts/Perfektta.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-SemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-LightItalic.otf") format("opentype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-RegularItalic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-MediumItalic.otf") format("opentype");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-SemiBoldItalic.otf") format("opentype");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfektta";
+  src: url("/fonts/Perfektta-BoldItalic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Perfektta Display";
+  src: url("/fonts/Perfektta.woff") format("woff");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -37,7 +110,10 @@ body {
 }
 
 body {
-  font-family: "Teodor", Georgia, serif;
+  font-family: "Perfektta", Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -86,27 +162,34 @@ video {
 }
 
 .font-display {
-  font-family: "Perfektta", Arial, sans-serif;
+  font-family: "Perfektta Display", "Perfektta", Arial, sans-serif;
+  font-weight: 400;
 }
 
 .font-body {
-  font-family: "Teodor", Georgia, serif;
+  font-family: "Perfektta", Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
 }
 
 .text-h1 {
-  font-family: "Perfektta", Arial, sans-serif;
+  font-family: "Perfektta Display", "Perfektta", Arial, sans-serif;
+  font-weight: 400;
   line-height: 0.92;
   letter-spacing: -0.03em;
 }
 
 .text-h2 {
   font-family: "Perfektta", Arial, sans-serif;
+  font-weight: 600;
   font-size: 18px;
   line-height: 1.1;
 }
 
 .text-p1 {
-  font-family: "Teodor", Georgia, serif;
+  font-family: "Perfektta", Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   font-size: 18px;
   line-height: 1.25;
 }
@@ -170,7 +253,8 @@ video {
 }
 
 .project-wordmark {
-  font-family: "Perfektta", Arial, sans-serif;
+  font-family: "Perfektta Display", "Perfektta", Arial, sans-serif;
+  font-weight: 400;
   font-size: clamp(56px, 8vw, 110px);
   line-height: 0.92;
   letter-spacing: -0.03em;
@@ -187,21 +271,24 @@ video {
 }
 
 .project-client-inline {
-  font-family: "Teodor", Georgia, serif;
+  font-family: "Perfektta", Arial, sans-serif;
+  font-weight: 500;
   font-size: clamp(15px, 1.2vw, 18px);
   line-height: 1.05;
-  letter-spacing: 0;
-  margin-left: clamp(10px, 1vw, 18px);
+  letter-spacing: 0.02em;
+  margin-left: clamp(6px, 0.7vw, 12px);
   transform: translateY(0.12em);
   white-space: nowrap;
 }
 
 .project-client-inline--modal {
   font-size: clamp(16px, 1.3vw, 20px);
+  margin-left: clamp(4px, 0.45vw, 8px);
 }
 
 .text-h1 {
-  font-family: "Perfektta", Arial, sans-serif;
+  font-family: "Perfektta Display", "Perfektta", Arial, sans-serif;
+  font-weight: 400;
   font-size: 110px;
   line-height: 0.92;
   letter-spacing: -0.03em;
@@ -255,7 +342,7 @@ video {
   .project-client-inline--modal {
     font-size: 0.25em;
     display: inline;
-    margin-left: 0.22em;
+    margin-left: 0.16em;
     margin-top: 0;
     white-space: nowrap;
   }

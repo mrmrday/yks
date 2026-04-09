@@ -283,7 +283,7 @@ function renderProjectWordmark(
 
 function SectionLinks() {
   return (
-    <p className="overlay-copy text-[18px] leading-[1.35] tracking-[-0.01em]">
+    <p className="overlay-copy text-[18px] leading-[1.35] tracking-[0em]">
       {COVERAGE_LINKS.map((link, index) => (
         <span key={link.href}>
           <a
@@ -307,17 +307,17 @@ function LowerInfoSection({ mobile = false }: { mobile?: boolean }) {
       <section className="overlay-copy">
         <div className="grid grid-cols-1 gap-y-8">
           <div>
-            <h2 className="mb-5 text-[18px] leading-none tracking-[-0.01em]">
+            <h2 className="mb-5 text-[18px] leading-none tracking-[0em]">
               Coverage
             </h2>
             <SectionLinks />
           </div>
 
           <div>
-            <h2 className="mb-5 text-[18px] leading-none tracking-[-0.01em]">
+            <h2 className="mb-5 text-[18px] leading-none tracking-[0em]">
               Brands
             </h2>
-            <p className="text-[16px] tracking-[-0.01em]">{BRANDS}</p>
+            <p className="text-[16px] tracking-[0em]">{BRANDS}</p>
           </div>
         </div>
       </section>
@@ -328,13 +328,13 @@ function LowerInfoSection({ mobile = false }: { mobile?: boolean }) {
     <section className="overlay-copy">
       <div className="hidden md:grid md:grid-cols-12 md:gap-x-8 md:gap-y-5">
         <div className="md:col-span-4 md:col-start-1">
-          <h2 className="text-[18px] leading-none tracking-[-0.01em]">
+          <h2 className="text-[18px] leading-none tracking-[0em]">
             Coverage
           </h2>
         </div>
 
         <div className="md:col-span-4 md:col-start-5">
-          <h2 className="text-[18px] leading-none tracking-[-0.01em]">
+          <h2 className="text-[18px] leading-none tracking-[0em]">
             Brands
           </h2>
         </div>
@@ -344,7 +344,7 @@ function LowerInfoSection({ mobile = false }: { mobile?: boolean }) {
         </div>
 
         <div className="md:col-span-4 md:col-start-5">
-          <p className="text-[18px] leading-[1.35] tracking-[-0.01em]">
+          <p className="text-[18px] leading-[1.35] tracking-[0em]">
             {BRANDS}
           </p>
         </div>
@@ -1391,7 +1391,7 @@ export default function Home() {
 
                       <div className="mt-5 max-w-[1080px] space-y-4 sm:mt-6 sm:space-y-5 md:mt-4 md:space-y-3">
                         {subtitle ? (
-                          <p className="max-w-[980px] font-['Perfektta'] text-[22px] leading-[1.02] tracking-[-0.03em] text-[#2F4DFF] sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]">
+                          <p className="max-w-[980px] font-['Perfektta'] font-semibold text-[22px] leading-[1.02] tracking-[-0.01em] text-[#2F4DFF] sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]">
                             {subtitle}
                           </p>
                         ) : null}
@@ -1407,7 +1407,7 @@ export default function Home() {
 
                         {selectedProject.credits?.length ? (
                           <div className="space-y-3 pt-1">
-                            <p className="font-['Perfektta'] text-[18px] leading-none tracking-[-0.01em] text-[#2F4DFF] sm:text-[20px]">
+                            <p className="font-['Perfektta'] font-semibold text-[18px] leading-none tracking-[0.01em] text-[#2F4DFF] sm:text-[20px]">
                               Credits
                             </p>
                             <CreditsList credits={selectedProject.credits} />
@@ -1428,7 +1428,7 @@ export default function Home() {
                               >
                                 {selectedProject.mediaSections?.[item.index] ? (
                                   <div className="mb-4 space-y-3 sm:mb-5 sm:space-y-4">
-                                    <p className="max-w-[980px] font-['Perfektta'] text-[22px] leading-[1.02] tracking-[-0.03em] text-[#2F4DFF] sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]">
+                                    <p className="max-w-[980px] font-['Perfektta'] font-semibold text-[22px] leading-[1.02] tracking-[-0.01em] text-[#2F4DFF] sm:text-[28px] sm:leading-[1.04] md:text-[40px] md:leading-[0.98]">
                                       {selectedProject.mediaSections[item.index].title}
                                     </p>
                                     {splitParagraphs(
@@ -1444,7 +1444,7 @@ export default function Home() {
                                     {selectedProject.mediaSections[item.index].credits
                                       ?.length ? (
                                       <div className="space-y-3 pt-1">
-                                        <p className="font-['Perfektta'] text-[18px] leading-none tracking-[-0.01em] text-[#2F4DFF] sm:text-[20px]">
+                                        <p className="font-['Perfektta'] font-semibold text-[18px] leading-none tracking-[0.01em] text-[#2F4DFF] sm:text-[20px]">
                                           Credits
                                         </p>
                                         <CreditsList
