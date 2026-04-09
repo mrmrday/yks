@@ -234,7 +234,8 @@ function getGalleryLayout(
 function renderProjectWordmark(
   project: Project,
   isActive = false,
-  isModal = false
+  isModal = false,
+  showClient = true
 ) {
   return (
     <>
@@ -268,14 +269,18 @@ function renderProjectWordmark(
           project.title
         )}
 
-        {" "}
-        <span
-          className={`project-client-inline ${
-            isActive ? "text-white/80" : "text-foreground-65"
-          } ${isModal ? "project-client-inline--modal" : ""}`}
-        >
-          {project.client}
-        </span>
+        {showClient ? (
+          <>
+            {" "}
+            <span
+              className={`project-client-inline ${
+                isActive ? "text-white/80" : "text-foreground-65"
+              } ${isModal ? "project-client-inline--modal" : ""}`}
+            >
+              {project.client}
+            </span>
+          </>
+        ) : null}
       </span>
     </>
   );
@@ -492,7 +497,7 @@ export default function Home() {
         "A major brand update repositioning Starling Bank around a simple but ambitious idea: everyone can be good with money.\n\nMoving beyond awareness, the platform reframed financial wellbeing as a behaviour, not a balance — shifting the narrative from wealth to confidence, control and everyday decision-making. Built in response to a challenging economic landscape, the work set out to normalise money management and make it feel accessible, human and within reach.\n\nThe relaunch extended across identity, product and communications — from a refreshed visual system and app experience to a new brand voice and integrated campaign ecosystem. Developed in collaboration with Wolff Olins and The Sunshine Company, the platform unified Starling’s proposition around a single mission: helping the UK build a healthier relationship with money.\n\nA shift from product-first to people-first thinking — positioning Starling not just as a bank, but as a tool for better financial habits.",
       mediaSections: [
         {
-          title: "The Design",
+          title: "The Design.",
           body:
             "An updated art direction, design and visual system was needed to inspire and continue a pattern and behaviour of action. Our art direction needed a new set of visual principles for static and moving image that clearly linked back to our new brand strategy. Active teal and Starling purple as the core palette, with new vibrant secondary colours to support. An updated wordmark to evoke confidence and recognition - most noticeably dropping Bank from the naming. Starling’s typographic system pairs Avantt, a contemporary geometric grotesk, with CoFo Sans Semi Mono, a system-led semi-monospaced sans. Avantt carries the brand voice—confident, modern and approachable—while CoFo introduces a layer of precision and digital clarity. Together, they balance expression with functionality, reflecting both the human and technical sides of modern banking. We needed a distinctive illustration style to add more depth and personality to the brand, enrich complex topics in app – capturing how the product worked and benefited customers in a satisfying and simple way. The direction was agreed with WO and developed in house.",
           credits: [
@@ -1386,7 +1391,12 @@ export default function Home() {
                   <div className="px-5 py-6 sm:px-6 sm:py-8 md:px-10 md:py-10">
                     <div className="max-w-[980px]">
                       <div id="project-modal-title" className="flex flex-col">
-                        {renderProjectWordmark(selectedProject, false, true)}
+                        {renderProjectWordmark(
+                          selectedProject,
+                          false,
+                          true,
+                          selectedProject.title !== "Set Yourself Free"
+                        )}
                       </div>
 
                       <div className="mt-5 max-w-[1080px] space-y-4 sm:mt-6 sm:space-y-5 md:mt-4 md:space-y-3">
@@ -1416,7 +1426,13 @@ export default function Home() {
                       </div>
 
                       {selectedProjectGallery.length > 0 && (
-                        <div className="mt-6 border-t border-foreground-soft pt-4 sm:mt-8 sm:pt-5">
+                        <div
+                          className={`mt-6 ${
+                            selectedProject.title === "Good With Money"
+                              ? "pt-4 sm:mt-8 sm:pt-5"
+                              : "border-t border-foreground-soft pt-4 sm:mt-8 sm:pt-5"
+                          }`}
+                        >
                           <div className="space-y-6 sm:space-y-8 md:space-y-10">
                             {selectedProjectGalleryLayout.map((item) => (
                               <article
