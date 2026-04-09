@@ -547,6 +547,7 @@ export default function Home() {
         "/projects/joined-4.jpg",
         "/projects/joined-5.jpg",
       ],
+      subtitle: "A campaign for sharing money, moments and everyday life together.",
       body:
         "Managing bills, saving for shared goals or just splitting the dinner tab: do life together with a joint account. Committed media spend but a need to change direction at short notice. Executed in house with support from trusted friends. Proud of this one.",
       credits: [
@@ -581,6 +582,11 @@ export default function Home() {
         "The work translates product into narrative — embedding features within everyday, character-led stories rather than traditional financial messaging. Built as an integrated system across film, OOH and digital nationally, the platform creates a consistent language that adapts across audiences and life stages. A shift from feature-led advertising to human-centred storytelling.",
       credits: [
         { label: "Brand Strategy and Creative Direction", value: "Wonderhood Studios" },
+        {
+          label: "Director",
+          value: "Lucy Forbes",
+          href: "https://www.instagram.com/forbesforbes/?hl=en",
+        },
         { label: "Design", value: "YKS" },
         { label: "Photography", value: "Gina Atanesian" },
       ],
@@ -620,6 +626,7 @@ export default function Home() {
       hoverPreviewSrc: "/projects/set-your-business-free-hover.mp4",
       modalSrc: "/projects/set-your-business-free.mp4",
       gallery: ["/projects/set-your-business-free-2.mp4"],
+      subtitle: "Repositioning business banking from friction to freedom.",
       body:
         "Building on Set Yourself Free, the campaign reframed the relationship between small businesses and traditional banking—shifting the narrative from constraint to liberation. Built around the insight that legacy banks create friction, the work positions Starling as a tool for independence: intuitive, fast, and built for how modern businesses actually operate.\n\nCreatively, the campaign leans into a bold, expressive visual language—combining confident typography, kinetic motion, and a sense of lightness that mirrors the idea of release. Business owners are depicted not as burdened operators, but as energised individuals, freed from outdated systems and able to focus on what matters most: running and growing their business.\n\nThe identity system was designed to work fluidly across film, digital, and out-of-home—balancing clarity with character. Messaging is direct and optimistic, while the visual world introduces a sense of uplift and momentum, reinforcing the core proposition at every touchpoint. This was a shift from functional banking communications to something more human and emotionally resonant—positioning Starling not just as a better bank, but as an enabler of progress.",
       credits: [

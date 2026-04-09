@@ -283,7 +283,11 @@ video {
 
 .project-client-inline--modal {
   font-size: clamp(16px, 1.3vw, 20px);
-  margin-left: clamp(4px, 0.45vw, 8px);
+  display: block;
+  margin-left: 0;
+  margin-top: 0.14em;
+  transform: none;
+  white-space: normal;
 }
 
 .text-h1 {
@@ -341,10 +345,10 @@ video {
 
   .project-client-inline--modal {
     font-size: 0.25em;
-    display: inline;
-    margin-left: 0.16em;
-    margin-top: 0;
-    white-space: nowrap;
+    display: block;
+    margin-left: 0;
+    margin-top: 0.2em;
+    white-space: normal;
   }
 }
 
