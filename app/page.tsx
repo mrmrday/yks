@@ -307,14 +307,14 @@ function LowerInfoSection({ mobile = false }: { mobile?: boolean }) {
       <section className="overlay-copy">
         <div className="grid grid-cols-1 gap-y-8">
           <div>
-            <h2 className="mb-5 text-[18px] leading-none tracking-[0em]">
+            <h2 className="mb-5 text-[16px] leading-none tracking-[0em] md:text-[18px]">
               Coverage
             </h2>
             <SectionLinks />
           </div>
 
           <div>
-            <h2 className="mb-5 text-[18px] leading-none tracking-[0em]">
+            <h2 className="mb-5 text-[16px] leading-none tracking-[0em] md:text-[18px]">
               Brands
             </h2>
             <p className="text-[16px] tracking-[0em]">{BRANDS}</p>
@@ -328,13 +328,13 @@ function LowerInfoSection({ mobile = false }: { mobile?: boolean }) {
     <section className="overlay-copy">
       <div className="hidden md:grid md:grid-cols-12 md:gap-x-8 md:gap-y-5">
         <div className="md:col-span-4 md:col-start-1">
-          <h2 className="text-[18px] leading-none tracking-[0em]">
+          <h2 className="text-[16px] leading-none tracking-[0em] md:text-[18px]">
             Coverage
           </h2>
         </div>
 
         <div className="md:col-span-4 md:col-start-5">
-          <h2 className="text-[18px] leading-none tracking-[0em]">
+          <h2 className="text-[16px] leading-none tracking-[0em] md:text-[18px]">
             Brands
           </h2>
         </div>
@@ -621,7 +621,7 @@ export default function Home() {
       modalSrc: "/projects/set-your-business-free.mp4",
       gallery: ["/projects/set-your-business-free-2.mp4"],
       body:
-        "An extension of the previously launched Set Yourself Free, Set Your Business Free reframed the relationship between small businesses and traditional banking—shifting the narrative from constraint to liberation. Built around the insight that legacy banks create friction, the work positions Starling as a tool for independence: intuitive, fast, and built for how modern businesses actually operate.\n\nCreatively, the campaign leans into a bold, expressive visual language—combining confident typography, kinetic motion, and a sense of lightness that mirrors the idea of release. Business owners are depicted not as burdened operators, but as energised individuals, freed from outdated systems and able to focus on what matters most: running and growing their business.\n\nThe identity system was designed to work fluidly across film, digital, and out-of-home—balancing clarity with character. Messaging is direct and optimistic, while the visual world introduces a sense of uplift and momentum, reinforcing the core proposition at every touchpoint. This was a shift from functional banking communications to something more human and emotionally resonant—positioning Starling not just as a better bank, but as an enabler of progress.",
+        "Building on Set Yourself Free, the campaign reframed the relationship between small businesses and traditional banking—shifting the narrative from constraint to liberation. Built around the insight that legacy banks create friction, the work positions Starling as a tool for independence: intuitive, fast, and built for how modern businesses actually operate.\n\nCreatively, the campaign leans into a bold, expressive visual language—combining confident typography, kinetic motion, and a sense of lightness that mirrors the idea of release. Business owners are depicted not as burdened operators, but as energised individuals, freed from outdated systems and able to focus on what matters most: running and growing their business.\n\nThe identity system was designed to work fluidly across film, digital, and out-of-home—balancing clarity with character. Messaging is direct and optimistic, while the visual world introduces a sense of uplift and momentum, reinforcing the core proposition at every touchpoint. This was a shift from functional banking communications to something more human and emotionally resonant—positioning Starling not just as a better bank, but as an enabler of progress.",
       credits: [
         { label: "Creative", value: "Wonderhood Studios" },
         { label: "Director", value: "Choé Bailly" },
@@ -1133,7 +1133,7 @@ export default function Home() {
             .map((item, i) => (
               <span
                 key={i}
-                className="mr-10 text-[13px] text-blue-accent md:mr-12 md:text-[16px]"
+                className="mr-10 text-[16px] text-blue-accent md:mr-12 md:text-[18px]"
               >
                 {item}
               </span>
@@ -1163,7 +1163,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => setIsAboutOpen(true)}
-          className="font-['Perfektta'] text-[16px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[19px]"
+          className="font-['Perfektta'] font-medium text-[16px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[18px]"
         >
           About
         </button>
@@ -1184,7 +1184,7 @@ export default function Home() {
       >
         <a
           href={`mailto:${CONTACT_EMAIL}`}
-          className="font-['Perfektta'] text-[16px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[19px]"
+          className="font-['Perfektta'] font-medium text-[16px] text-[#7B00FF] transition-opacity hover:opacity-70 focus-visible:rounded-[2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current md:text-[18px]"
         >
           {CONTACT_EMAIL}
         </a>
