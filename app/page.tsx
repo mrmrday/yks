@@ -571,6 +571,7 @@ export default function Home() {
       mediaType: "video",
       previewSrc: "/projects/tbbfy-preview.mp4",
       hoverPreviewSrc: "/projects/tbbfy-hover.mp4",
+      modalSrc: "/projects/tbbfy-project.jpg",
       gallery: [
         "/projects/tbbfy-1.mp4",
         "/projects/tbbfy-2.mp4",
@@ -837,6 +838,31 @@ export default function Home() {
     setIsModalVideoPlaying(false);
     setIsModalVideoMuted(true);
   }, [selectedProject]);
+
+  useEffect(() => {
+    const video = modalVideoRef.current;
+
+    if (!video) return;
+
+    if (prefersReducedMotion || !heroSrc || !isVideoAsset(heroSrc)) {
+      video.pause();
+      setIsModalVideoPlaying(false);
+      return;
+    }
+
+    video.defaultMuted = true;
+    video.muted = true;
+    video.currentTime = 0;
+    setIsModalVideoMuted(true);
+
+    const playPromise = video.play();
+
+    if (playPromise) {
+      void playPromise.catch(() => {
+        setIsModalVideoPlaying(false);
+      });
+    }
+  }, [heroSrc, prefersReducedMotion, selectedProject]);
 
   useEffect(() => {
     const shouldUseCustomCursor = !isMobileViewport;
@@ -1473,9 +1499,13 @@ export default function Home() {
                     {heroSrc && isVideoAsset(heroSrc) ? (
                       <>
                         <video
+                          key={heroSrc}
                           ref={modalVideoRef}
                           src={heroSrc}
+                          autoPlay={!prefersReducedMotion}
                           muted
+                          defaultMuted
+                          loop
                           playsInline
                           controls={!isMobileViewport}
                           preload="metadata"
