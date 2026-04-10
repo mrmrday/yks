@@ -119,6 +119,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body.custom-cursor-active,
+body.custom-cursor-active * {
+  cursor: none !important;
+}
+
 h1,
 h2,
 h3,

@@ -740,6 +740,7 @@ export default function Home() {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isModalVideoPlaying, setIsModalVideoPlaying] = useState(false);
   const [isModalVideoMuted, setIsModalVideoMuted] = useState(true);
+  const [isCustomCursorVisible, setIsCustomCursorVisible] = useState(false);
 
   /* =========================
     REFS
@@ -749,6 +750,9 @@ export default function Home() {
   const previewRef = useRef<HTMLDivElement | null>(null);
   const previewLeftToRef = useRef<((value: number) => unknown) | null>(null);
   const previewTopToRef = useRef<((value: number) => unknown) | null>(null);
+  const customCursorRef = useRef<HTMLDivElement | null>(null);
+  const customCursorXToRef = useRef<((value: number) => unknown) | null>(null);
+  const customCursorYToRef = useRef<((value: number) => unknown) | null>(null);
   const modalVideoRef = useRef<HTMLVideoElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const projectListSectionRef = useRef<HTMLElement | null>(null);
@@ -833,6 +837,58 @@ export default function Home() {
     setIsModalVideoPlaying(false);
     setIsModalVideoMuted(true);
   }, [selectedProject]);
+
+  useEffect(() => {
+    const shouldUseCustomCursor = !isMobileViewport;
+
+    document.body.classList.toggle("custom-cursor-active", shouldUseCustomCursor);
+
+    if (!shouldUseCustomCursor) {
+      setIsCustomCursorVisible(false);
+    }
+
+    return () => {
+      document.body.classList.remove("custom-cursor-active");
+    };
+  }, [isMobileViewport]);
+
+  useEffect(() => {
+    if (!customCursorRef.current || isMobileViewport) return;
+
+    customCursorXToRef.current = gsap.quickTo(customCursorRef.current, "x", {
+      duration: 0.13,
+      ease: "power3.out",
+    });
+    customCursorYToRef.current = gsap.quickTo(customCursorRef.current, "y", {
+      duration: 0.13,
+      ease: "power3.out",
+    });
+
+    function handlePointerMove(event: PointerEvent) {
+      customCursorXToRef.current?.(event.clientX);
+      customCursorYToRef.current?.(event.clientY);
+
+      if (!isCustomCursorVisible) {
+        setIsCustomCursorVisible(true);
+      }
+    }
+
+    function handlePointerLeave() {
+      setIsCustomCursorVisible(false);
+    }
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerdown", handlePointerMove);
+    window.addEventListener("mouseout", handlePointerLeave);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerdown", handlePointerMove);
+      window.removeEventListener("mouseout", handlePointerLeave);
+      customCursorXToRef.current = null;
+      customCursorYToRef.current = null;
+    };
+  }, [isCustomCursorVisible, isMobileViewport]);
 
   useEffect(() => {
     const weatherCodeLabels: Record<number, string> = {
@@ -1182,6 +1238,16 @@ export default function Home() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#efefec] text-foreground">
+      {!isMobileViewport && (
+        <div
+          ref={customCursorRef}
+          aria-hidden="true"
+          className={`pointer-events-none fixed left-0 top-0 z-[160] hidden h-[17px] w-[17px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#002BFF] transition-opacity duration-200 md:block ${
+            isCustomCursorVisible ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      )}
+
       {/* =========================
         TOP TICKER
       ========================= */}
