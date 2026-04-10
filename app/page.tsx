@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { MouseEvent as ReactMouseEvent, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
@@ -149,6 +149,10 @@ function isVideoAsset(src: string) {
 
 function normalizeText(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
 }
 
 function getGalleryFrameClass(index: number, total: number) {
@@ -726,6 +730,7 @@ export default function Home() {
     null
   );
   const [activePreviewTop, setActivePreviewTop] = useState<number>(240);
+  const [activePreviewLeft, setActivePreviewLeft] = useState<number>(0);
   const [activePreviewWidth, setActivePreviewWidth] = useState<number>(700);
   const [ukTime, setUkTime] = useState("--:--");
   const [ukTimeZone, setUkTimeZone] = useState("UK");
@@ -742,6 +747,8 @@ export default function Home() {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
+  const previewLeftToRef = useRef<((value: number) => unknown) | null>(null);
+  const previewTopToRef = useRef<((value: number) => unknown) | null>(null);
   const modalVideoRef = useRef<HTMLVideoElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const projectListSectionRef = useRef<HTMLElement | null>(null);
@@ -995,6 +1002,24 @@ export default function Home() {
   useEffect(() => {
     if (!previewRef.current || prefersReducedMotion) return;
 
+    previewLeftToRef.current = gsap.quickTo(previewRef.current, "left", {
+      duration: 1.35,
+      ease: "power3.out",
+    });
+    previewTopToRef.current = gsap.quickTo(previewRef.current, "top", {
+      duration: 1.35,
+      ease: "power3.out",
+    });
+
+    return () => {
+      previewLeftToRef.current = null;
+      previewTopToRef.current = null;
+    };
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (!previewRef.current || prefersReducedMotion) return;
+
     if (!activeProject) {
       gsap.to(previewRef.current, {
         opacity: 0,
@@ -1004,14 +1029,31 @@ export default function Home() {
       return;
     }
 
+    previewLeftToRef.current?.(activePreviewLeft);
+    previewTopToRef.current?.(activePreviewTop);
+
     gsap.to(previewRef.current, {
-      top: activePreviewTop,
       opacity: 1,
-      duration: 0.28,
+      duration: 0.24,
       ease: "power2.out",
       overwrite: true,
     });
-  }, [activePreviewTop, activeProject, prefersReducedMotion]);
+  }, [activePreviewLeft, activePreviewTop, activeProject, prefersReducedMotion]);
+
+  useEffect(() => {
+    if (!previewRef.current || !prefersReducedMotion) return;
+
+    if (!activeProject) {
+      gsap.set(previewRef.current, { opacity: 0 });
+      return;
+    }
+
+    gsap.set(previewRef.current, {
+      left: activePreviewLeft,
+      top: activePreviewTop,
+      opacity: 1,
+    });
+  }, [activePreviewLeft, activePreviewTop, activeProject, prefersReducedMotion]);
 
   /* =========================
     CLOSE MODAL
@@ -1074,7 +1116,11 @@ export default function Home() {
     setIsModalVideoMuted(nextMuted);
   }
 
-  function handleProjectPreview(project: Project, index: number) {
+  function handleProjectPreview(
+    project: Project,
+    index: number,
+    cursorPosition?: { x: number; y: number }
+  ) {
     setActiveProject(project);
     setActiveProjectIndex(index);
 
@@ -1085,16 +1131,26 @@ export default function Home() {
 
     const sectionRect = section.getBoundingClientRect();
     const buttonRect = button.getBoundingClientRect();
-    const nextPreviewCenter =
-      buttonRect.top - sectionRect.top + buttonRect.height / 2;
-
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
     const previewWidth = getPreviewWidth(project, sectionRect.width);
     const previewHeight = previewWidth * 0.62;
-    const minTop = previewHeight / 2 + 20;
-    const maxTop = sectionRect.height - previewHeight / 2 - 20;
-    const clampedTop = Math.min(Math.max(nextPreviewCenter, minTop), maxTop);
+    const pointerPreviewCenter = cursorPosition
+      ? cursorPosition.y
+      : buttonRect.top + buttonRect.height / 2;
+    const logoTopBoundary = index === 0 ? 40 : 74;
+    const minTop = previewHeight / 2 + logoTopBoundary;
+    const maxTop = viewportHeight - previewHeight / 2 - 24;
+    const clampedTop = clamp(pointerPreviewCenter, minTop, maxTop);
+    const cursorLeft = cursorPosition
+      ? cursorPosition.x - previewWidth / 2 + 120
+      : Math.max(viewportWidth * 0.58, 40 + previewWidth / 2);
+    const minLeft = 40;
+    const maxLeft = Math.max(viewportWidth - previewWidth - 40, minLeft);
+    const clampedLeft = clamp(cursorLeft, minLeft, maxLeft);
 
     setActivePreviewWidth(previewWidth);
+    setActivePreviewLeft(clampedLeft);
     setActivePreviewTop(clampedTop);
   }
 
@@ -1227,9 +1283,20 @@ export default function Home() {
                           projectButtonRefs.current[i] = node;
                         }}
                         type="button"
-                        onMouseEnter={() => {
+                        onMouseEnter={(event: ReactMouseEvent<HTMLButtonElement>) => {
                           if (!isMobileViewport) {
-                            handleProjectPreview(project, i);
+                            handleProjectPreview(project, i, {
+                              x: event.clientX,
+                              y: event.clientY,
+                            });
+                          }
+                        }}
+                        onMouseMove={(event: ReactMouseEvent<HTMLButtonElement>) => {
+                          if (!isMobileViewport) {
+                            handleProjectPreview(project, i, {
+                              x: event.clientX,
+                              y: event.clientY,
+                            });
                           }
                         }}
                         onFocus={() => {
@@ -1256,13 +1323,14 @@ export default function Home() {
                   HOVER PREVIEW
                 ========================= */}
 
-                <div className="pointer-events-none absolute inset-0 z-20 hidden md:grid md:grid-cols-12 md:gap-x-8">
+                <div className="pointer-events-none fixed inset-0 z-20 hidden md:block">
                   {activeProject && (
-                    <div className="relative md:col-span-5 md:col-start-6">
+                    <div className="relative h-full w-full">
                       <div
                         ref={previewRef}
-                        className="absolute left-0 -translate-y-1/2"
+                        className="fixed -translate-y-1/2"
                         style={{
+                          left: `${activePreviewLeft}px`,
                           top: `${activePreviewTop}px`,
                           width: `${activePreviewWidth}px`,
                         }}
