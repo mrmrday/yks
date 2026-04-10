@@ -759,6 +759,7 @@ export default function Home() {
   const projectListSectionRef = useRef<HTMLElement | null>(null);
   const projectButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const lastFocusedProjectIndexRef = useRef<number | null>(null);
+  const heroSrc = selectedProject?.modalSrc ?? selectedProject?.previewSrc;
 
   /* =========================
     ESC CLOSE
@@ -1251,7 +1252,6 @@ export default function Home() {
   const descriptionParagraphs = selectedProject
     ? splitParagraphs(selectedProject.body ?? selectedProject.description)
     : [];
-  const heroSrc = selectedProject?.modalSrc ?? selectedProject?.previewSrc;
   const isModalOpen = Boolean(selectedProject) || isAboutOpen;
   const tickerItems = [
     "YKS",
@@ -1504,7 +1504,6 @@ export default function Home() {
                           src={heroSrc}
                           autoPlay={!prefersReducedMotion}
                           muted
-                          defaultMuted
                           loop
                           playsInline
                           controls={!isMobileViewport}
